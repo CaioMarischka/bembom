@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano Alimentar da Família</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1F1EF;
+    --card:#FFFFFF;
+    --forest:#1F4A3D;
+    --forest-dark:#153229;
+    --gold:#E3A72B;
+    --gold-dark:#B7830F;
+    --berry:#C74B67;
+    --berry-dark:#9E3750;
+    --ink:#22241F;
+    --ink-soft:#68695F;
+    --line:#E1E1DC;
+    --shadow: 0 1px 2px rgba(20,20,18,0.05), 0 8px 24px rgba(20,20,18,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(20,20,18,0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:20px 16px 8px;}
+
+  header{padding:22px 4px 18px;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--forest);
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{content:"";width:16px;height:2px;background:var(--gold);display:inline-block;}
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(28px,7vw,38px);
+    line-height:1.04;
+    margin:10px 0 6px;
+    color:var(--forest-dark);
+    letter-spacing:-0.01em;
+  }
+  .sub{font-size:14.5px;color:var(--ink-soft);max-width:46ch;line-height:1.5;}
+  .savings-badge{
+    margin-top:14px;
+    display:inline-flex;align-items:baseline;gap:8px;
+    background:var(--forest-dark);color:#F6F1E4;
+    padding:10px 16px;border-radius:100px;box-shadow:var(--shadow);
+  }
+  .savings-badge .num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--gold);}
+  .savings-badge .txt{font-size:12.5px;color:#DCE6DF;}
+
+  /* motivational banner */
+  .moti-banner{
+    margin-top:14px;
+    background:linear-gradient(135deg,var(--forest) 0%,var(--forest-dark) 100%);
+    color:#F6F1E4;
+    border-radius:16px;
+    padding:18px 20px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .moti-banner::before{
+    content:"✦";
+    position:absolute; right:14px; top:10px;
+    font-size:34px; color:rgba(227,167,43,0.25);
+  }
+  .moti-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--gold); font-weight:700; margin-bottom:6px;
+  }
+  .moti-text{font-size:14.5px; line-height:1.55; max-width:48ch;}
+  .moti-week{font-size:11.5px; color:#B9C8BE; margin-top:8px; font-family:'JetBrains Mono',monospace;}
+
+  nav.tabs{
+    position:sticky; top:0; z-index:20;
+    display:flex; gap:6px;
+    background:var(--paper);
+    padding:14px 0 12px; margin-top:4px;
+    overflow-x:auto; scrollbar-width:none;
+  }
+  nav.tabs::-webkit-scrollbar{display:none;}
+  nav.tabs button{
+    flex:0 0 auto;
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px;
+    color:var(--forest-dark); background:var(--card); border:1px solid var(--line);
+    padding:9px 16px; border-radius:100px; cursor:pointer; transition:all .15s ease; white-space:nowrap;
+  }
+  nav.tabs button.active{background:var(--forest); border-color:var(--forest); color:#fff; box-shadow:var(--shadow);}
+
+  section.panel{display:none;animation:fade .25s ease;}
+  section.panel.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .day-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    margin-bottom:14px; box-shadow:var(--shadow); overflow:hidden; position:relative;
+  }
+  .day-card::before{content:"";position:absolute;top:0;left:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--gold),var(--forest));}
+  .day-head{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16.5px; color:var(--forest-dark);
+    padding:14px 18px 10px 22px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .day-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);font-weight:500;}
+  .meal-row{
+    display:grid; grid-template-columns:34px 84px 1fr; gap:2px 10px; align-items:start;
+    padding:9px 18px 9px 22px; border-top:1px dashed var(--line);
+  }
+  .meal-row .ic{font-size:17px;line-height:1.4;}
+  .meal-row .lbl{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;text-transform:uppercase;
+    letter-spacing:.04em;color:var(--ink-soft);font-weight:600;padding-top:2px;
+  }
+  .meal-row .txt{font-size:14px;line-height:1.42;color:var(--ink);font-weight:500;}
+  .meal-row .g{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--forest);background:#EAF3E4;
+    display:inline-block;margin-top:5px;padding:3px 8px;border-radius:7px;line-height:1.5;
+  }
+  .tag{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;
+    letter-spacing:.02em;padding:1.5px 7px;border-radius:100px;margin-left:6px;vertical-align:1px;white-space:nowrap;
+  }
+  .tag.eco{background:#EAF3E4;color:var(--forest-dark);}
+  .tag.new{background:#FBEEDD;color:var(--gold-dark);}
+
+  #panel-kids .day-card::before{background:linear-gradient(180deg,var(--berry),var(--forest));}
+  #panel-kids .meal-row .g{background:#F7E7EB;color:var(--berry-dark);}
+  .note-box{
+    background:#FBEEDD;border:1px solid #F0DBB2;border-radius:12px;padding:13px 16px;
+    font-size:13px;line-height:1.5;color:#6B4E12;margin:6px 0 18px;
+  }
+
+  .progress-bar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px;box-shadow:var(--shadow);}
+  .progress-top{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);margin-bottom:8px;font-weight:600;}
+  .progress-top span.count{font-family:'JetBrains Mono',monospace;color:var(--forest-dark);}
+  .progress-track{height:8px;background:var(--line);border-radius:100px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--forest));width:0%;transition:width .3s ease;}
+
+  .cat-block{margin-bottom:20px;}
+  .cat-title{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--forest);font-weight:700;margin:0 0 8px 4px;display:flex;align-items:center;gap:8px;
+  }
+  .cat-title::after{content:"";flex:1;height:1px;background:var(--line);}
+  .item-card{
+    display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow);
+  }
+  .item-card input[type=checkbox]{
+    appearance:none;-webkit-appearance:none;width:20px;height:20px;flex:0 0 20px;
+    border:2px solid var(--forest);border-radius:6px;margin-top:2px;cursor:pointer;position:relative;transition:background .15s;
+  }
+  .item-card input[type=checkbox]:checked{background:var(--forest);}
+  .item-card input[type=checkbox]:checked::after{content:"✓";color:#fff;font-size:13px;font-weight:700;position:absolute;left:3px;top:-1px;}
+  .item-body{flex:1;}
+  .item-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap;}
+  .item-name{font-weight:600;font-size:14.5px;color:var(--ink);}
+  .item-qty{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--forest-dark);font-weight:600;white-space:nowrap;}
+  .item-obs{font-size:12.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4;}
+  .item-card.checked .item-name,.item-card.checked .item-qty{text-decoration:line-through;opacity:.45;}
+  .item-card.checked .item-obs{opacity:.35;}
+
+  .change-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;
+    box-shadow:var(--shadow);display:grid;grid-template-columns:26px 1fr;gap:4px 12px;
+  }
+  .change-card .icon{font-size:19px;}
+  .change-card .what{font-weight:700;font-size:14.5px;color:var(--forest-dark);line-height:1.35;}
+  .change-card .why{grid-column:2;font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:2px;}
+  .big-savings{
+    margin-top:6px;background:var(--forest-dark);color:#F6F1E4;border-radius:16px;padding:22px 20px;text-align:center;
+  }
+  .big-savings .n{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:44px;color:var(--gold);line-height:1;}
+  .big-savings .l{font-size:13px;color:#DCE6DF;margin-top:8px;line-height:1.5;max-width:36ch;margin-left:auto;margin-right:auto;}
+
+  /* histórico */
+  .hist-item{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;
+    box-shadow:var(--shadow);overflow:hidden;
+  }
+  .hist-head{
+    display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer;
+  }
+  .hist-head .l{font-weight:600;font-size:14.5px;color:var(--forest-dark);}
+  .hist-head .d{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);}
+  .hist-head .arrow{font-size:13px;color:var(--forest);transition:transform .2s ease;}
+  .hist-item.open .arrow{transform:rotate(90deg);}
+  .hist-body{display:none;padding:0 16px 16px;}
+  .hist-item.open .hist-body{display:block;}
+  .hist-empty{
+    text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:13.5px;
+    background:var(--card);border:1px dashed var(--line);border-radius:14px;
+  }
+
+  .loading-note{text-align:center;padding:30px;color:var(--ink-soft);font-size:13px;font-family:'JetBrains Mono',monospace;}
+
+  footer{text-align:center;padding:26px 10px 6px;font-size:11.5px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Agosto – Setembro</div>
+    <h1>Plano Alimentar<br>da Família</h1>
+    <p class="sub">Alto teor proteico para os adultos, porções ajustadas para as crianças — com gramatura sugerida por prato, sem pesar no orçamento do mês.</p>
+    <div class="savings-badge">
+      <span class="num">−33%</span>
+      <span class="txt">de economia estimada na lista de compras</span>
+    </div>
+    <div class="moti-banner" id="moti-banner">
+      <div class="moti-label">Mensagem da semana</div>
+      <div class="moti-text" id="moti-text">Carregando...</div>
+      <div class="moti-week" id="moti-week"></div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="adults">Adultos</button>
+    <button class="tab-btn" data-tab="kids">Crianças</button>
+    <button class="tab-btn" data-tab="shopping">Compras</button>
+    <button class="tab-btn" data-tab="historico">Histórico</button>
+    <button class="tab-btn" data-tab="changes">O que mudou</button>
+  </nav>
+
+  <section class="panel active" id="panel-adults"><div class="loading-note">carregando cardápio…</div></section>
+  <section class="panel" id="panel-kids"><div class="loading-note">carregando cardápio…</div></section>
+
+  <section class="panel" id="panel-shopping">
+    <div class="progress-bar">
+      <div class="progress-top"><span>Progresso da compra</span><span class="count" id="progress-count">0 / 0</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+    <div id="shopping-list"><div class="loading-note">carregando lista…</div></div>
+  </section>
+
+  <section class="panel" id="panel-historico">
+    <div id="historico-list"><div class="loading-note">carregando histórico…</div></div>
+  </section>
+
+  <section class="panel" id="panel-changes">
+    <div id="changes-list"></div>
+    <div class="big-savings">
+      <div class="n">30–35%</div>
+      <div class="l">de economia mensal estimada, puxada principalmente pela redução do whey protein e pela troca de cortes de carne caros por alternativas mais baratas.</div>
+    </div>
+  </section>
+
+  <footer>plano revisado · gramatura sugerida, ajuste conforme apetite · atualizado toda semana</footer>
+</div>
+
+<script>
+const ICONS = {"Café da Manhã":"🍳","Almoço":"🍽️","Lanche da Tarde":"🥤","Jantar":"🌙"};
+
+const changesData = [
+  {icon:"🥤", what:"Whey protein reduzido pela metade, só para os adultos", why:"Era o maior gerador de custo recorrente; as crianças já obtêm proteína suficiente da comida."},
+  {icon:"🍗", what:"Peito de frango trocado majoritariamente por coxa/sobrecoxa", why:"Mesmo valor proteico, preço por kg bem mais baixo. Peito mantido só 1x/semana."},
+  {icon:"🥩", what:"Carne moída e bifes magros reduzidos", why:"Fígado bovino e sardinha/atum enlatados entram no rodízio — proteínas muito baratas e igualmente nutritivas."},
+  {icon:"🥚", what:"Ovos e feijão aumentados", why:"São as proteínas mais baratas por grama — sustentam o teor proteico sem pesar no orçamento."},
+  {icon:"🧒", what:"Cardápio das crianças separado do dos adultos", why:"Porções menores, sem whey, versões simples dos mesmos pratos — menos desperdício de comida."},
+  {icon:"🥛", what:"Leite e iogurte reduzidos", why:"Consequência direta de menos shakes de whey — menor volume necessário."},
+];
+
+function slug(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-");}
+
+function renderDays(containerId, data, hasNote){
+  const el = document.getElementById(containerId);
+  let html = "";
+  data.forEach((d,i)=>{
+    html += `<div class="day-card"><div class="day-head">${d.day}<span class="day-num">DIA ${i+1}/7</span></div>`;
+    for(const [label,m] of Object.entries(d.meals)){
+      const tagHtml = m.tag ? `<span class="tag ${m.tag.c}">${m.tag.l}</span>` : "";
+      html += `<div class="meal-row"><div class="ic">${ICONS[label]||"🍽️"}</div><div class="lbl">${label}</div><div class="txt">${m.txt}${tagHtml}<div class="g">${m.g}</div></div></div>`;
+    }
+    html += `</div>`;
+  });
+  if(hasNote){
+    html += `<div class="note-box">Sem suplementação de whey protein para as crianças — a proteína vem de ovos, carnes, feijão e laticínios. Gramaturas são sugestões de ponto de partida: ajuste conforme apetite e idade de cada criança.</div>`;
+  } else {
+    html += `<div class="note-box" style="background:#EAF3E4;border-color:#CFE3C4;color:#1F4A3D;">Gramaturas por refeição (peso cozido/pronto) são sugestões — ajuste conforme apetite e rotina de treino de cada adulto.</div>`;
+  }
+  el.innerHTML = html;
+}
+
+function renderShopping(shoppingData){
+  const shopEl = document.getElementById("shopping-list");
+  let shopHtml = "";
+  let allIds = [];
+  shoppingData.forEach(block=>{
+    shopHtml += `<div class="cat-block"><div class="cat-title">${block.cat}</div>`;
+    block.items.forEach(item=>{
+      const id = "chk-"+slug(block.cat)+"-"+slug(item.name);
+      allIds.push(id);
+      shopHtml += `<div class="item-card" id="card-${id}">
+        <input type="checkbox" id="${id}" data-key="compras:${id}">
+        <div class="item-body">
+          <div class="item-top"><span class="item-name">${item.name}</span><span class="item-qty">${item.qty}</span></div>
+          <div class="item-obs">${item.obs}</div>
+        </div>
+      </div>`;
+    });
+    shopHtml += `</div>`;
+  });
+  shopEl.innerHTML = shopHtml;
+
+  function updateProgress(){
+    const total = allIds.length;
+    const checked = allIds.filter(id=>document.getElementById(id).checked).length;
+    document.getElementById("progress-count").textContent = checked+" / "+total;
+    document.getElementById("progress-fill").style.width = (total? (checked/total*100):0)+"%";
+  }
+  allIds.forEach(id=>{
+    const cb = document.getElementById(id);
+    const key = cb.dataset.key;
+    try{
+      if(localStorage.getItem(key) === "1"){
+        cb.checked = true;
+        document.getElementById("card-"+id).classList.add("checked");
+      }
+    }catch(e){}
+    cb.addEventListener("change", ()=>{
+      document.getElementById("card-"+id).classList.toggle("checked", cb.checked);
+      updateProgress();
+      try{ localStorage.setItem(key, cb.checked?"1":"0"); }catch(e){ console.error(e); }
+    });
+  });
+  updateProgress();
+}
+
+function renderHistorico(manifest){
+  const el = document.getElementById("historico-list");
+  if(!manifest || manifest.length === 0){
+    el.innerHTML = `<div class="hist-empty">Ainda não há semanas arquivadas.<br>Toda semana que passar fica registrada aqui automaticamente.</div>`;
+    return;
+  }
+  let html = "";
+  manifest.slice().reverse().forEach((entry, idx)=>{
+    html += `<div class="hist-item" id="hist-${idx}">
+      <div class="hist-head" onclick="toggleHist(${idx}, '${entry.file}')">
+        <span class="l">${entry.label}</span>
+        <span class="d">${entry.date} <span class="arrow">›</span></span>
+      </div>
+      <div class="hist-body" id="hist-body-${idx}"></div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+let histLoaded = {};
+async function toggleHist(idx, file){
+  const item = document.getElementById("hist-"+idx);
+  item.classList.toggle("open");
+  if(item.classList.contains("open") && !histLoaded[idx]){
+    const body = document.getElementById("hist-body-"+idx);
+    body.innerHTML = `<div class="loading-note">carregando…</div>`;
+    try{
+      const res = await fetch(file);
+      const data = await res.json();
+      let html = `<div style="margin-top:10px;"><strong style="font-size:12px;color:var(--forest);font-family:'JetBrains Mono',monospace;text-transform:uppercase;">Adultos</strong></div>`;
+      body.innerHTML = html;
+      const tmp1 = document.createElement("div"); tmp1.id = "tmp-adults-"+idx;
+      body.appendChild(tmp1);
+      renderDaysInto(tmp1, data.adults);
+      const lbl2 = document.createElement("div");
+      lbl2.style = "margin-top:14px;";
+      lbl2.innerHTML = `<strong style="font-size:12px;color:var(--berry);font-family:'JetBrains Mono',monospace;text-transform:uppercase;">Crianças</strong>`;
+      body.appendChild(lbl2);
+      const tmp2 = document.createElement("div"); tmp2.id = "tmp-kids-"+idx;
+      body.appendChild(tmp2);
+      renderDaysInto(tmp2, data.kids);
+      histLoaded[idx] = true;
+    }catch(e){
+      body.innerHTML = `<div class="loading-note">não foi possível carregar essa semana.</div>`;
+    }
+  }
+}
+function renderDaysInto(el, data){
+  let html = "";
+  data.forEach((d,i)=>{
+    html += `<div class="day-card" style="margin-top:8px;"><div class="day-head">${d.day}<span class="day-num">DIA ${i+1}/7</span></div>`;
+    for(const [label,m] of Object.entries(d.meals)){
+      html += `<div class="meal-row"><div class="ic">${ICONS[label]||"🍽️"}</div><div class="lbl">${label}</div><div class="txt">${m.txt}<div class="g">${m.g}</div></div></div>`;
+    }
+    html += `</div>`;
+  });
+  el.innerHTML = html;
+}
+
+// changes (static)
+const chEl = document.getElementById("changes-list");
+let chHtml = "";
+changesData.forEach(c=>{
+  chHtml += `<div class="change-card"><div class="icon">${c.icon}</div><div class="what">${c.what}</div><div class="why">${c.why}</div></div>`;
+});
+chEl.innerHTML = chHtml;
+
+// tabs
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("panel-"+btn.dataset.tab).classList.add("active");
+  });
+});
+
+// load everything
+async function init(){
+  try{
+    const week = await (await fetch("data/current-week.json")).json();
+    document.getElementById("moti-text").textContent = week.motivational;
+    document.getElementById("moti-week").textContent = "Semana de " + week.weekLabel;
+    renderDays("panel-adults", week.adults, false);
+    renderDays("panel-kids", week.kids, true);
+  }catch(e){
+    document.getElementById("moti-text").textContent = "Não foi possível carregar a mensagem desta semana.";
+  }
+  try{
+    const shopping = await (await fetch("data/shopping.json")).json();
+    renderShopping(shopping);
+  }catch(e){
+    document.getElementById("shopping-list").innerHTML = `<div class="loading-note">não foi possível carregar a lista de compras.</div>`;
+  }
+  try{
+    const manifest = await (await fetch("historico/manifest.json")).json();
+    renderHistorico(manifest);
+  }catch(e){
+    renderHistorico([]);
+  }
+}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+[
+  {"cat": "Proteínas", "items": [
+    {"name": "Coxa / Sobrecoxa de frango", "qty": "3,5 kg/sem · 14 kg/mês", "obs": "Substitui a maior parte do peito — mesmo valor proteico, custo bem menor"},
+    {"name": "Peito de frango", "qty": "0,8 kg/sem · 3,2 kg/mês", "obs": "Reduzido, mantido 1x/semana para variedade"},
+    {"name": "Carne moída magra (patinho)", "qty": "1 kg/sem · 4 kg/mês", "obs": "Reduzido de 2kg/semana — usado 2x/semana"},
+    {"name": "Carne em tiras ou bifes magros", "qty": "0,8 kg/sem · 3,2 kg/mês", "obs": "Reduzido, complementado com fígado e enlatados"},
+    {"name": "Fígado bovino", "qty": "0,4 kg/sem · 1,6 kg/mês", "obs": "Item novo — proteína muito barata, rica em ferro"},
+    {"name": "Sardinha ou atum enlatados", "qty": "3 latas/sem · 12/mês", "obs": "Item novo — substitui carne 1x/semana"},
+    {"name": "Ovos", "qty": "70 un/sem · 280/mês", "obs": "Aumentado — proteína mais barata por grama"}
+  ]},
+  {"cat": "Suplementação", "items": [
+    {"name": "Whey Protein", "qty": "450 g/sem · 1,8 kg/mês", "obs": "Reduzido pela metade — só para os adultos, 1 dose/dia cada"}
+  ]},
+  {"cat": "Laticínios", "items": [
+    {"name": "Leite", "qty": "3 L/sem · 12 L/mês", "obs": "Reduzido — menos shakes de whey"},
+    {"name": "Iogurte Natural", "qty": "7 potes/sem · 28/mês", "obs": "Ajustado ao novo padrão de lanches"},
+    {"name": "Queijo (Minas ou Branco)", "qty": "500 g/sem · 2 kg/mês", "obs": "Mantido como acompanhamento"}
+  ]},
+  {"cat": "Carboidratos", "items": [
+    {"name": "Arroz", "qty": "1 kg/sem · 4 kg/mês", "obs": "Mantido — já era econômico"},
+    {"name": "Feijão", "qty": "700 g/sem · 2,8 kg/mês", "obs": "Aumentado — proteína vegetal muito barata"},
+    {"name": "Batata / Batata Doce / Abóbora", "qty": "2,5 kg/sem · 10 kg/mês", "obs": "Sem alteração"},
+    {"name": "Aveia em flocos ou farelo", "qty": "500 g/sem · 2 kg/mês", "obs": "Levemente reduzido — menos usada em shakes"},
+    {"name": "Tapioca e Pão Integral", "qty": "1,5 pct cada/sem · 6/mês", "obs": "Ajustado à demanda real"}
+  ]},
+  {"cat": "Hortifruti", "items": [
+    {"name": "Frutas (banana, maçã, mamão...)", "qty": "4 kg/sem · 16 kg/mês", "obs": "Sem alteração"},
+    {"name": "Vegetais para airfryer e saladas", "qty": "3 kg/sem · 12 kg/mês", "obs": "Sem alteração"}
+  ]},
+  {"cat": "Diversos", "items": [
+    {"name": "Alho, azeite, sal, orégano", "qty": "a gosto", "obs": "Sem alteração"}
+  ]}
+]
