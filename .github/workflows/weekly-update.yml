@@ -45,6 +45,7 @@ jobs:
             9. Garanta que todos os arquivos JSON que você tocar continuam válidos (sintaxe JSON correta).
           claude_args: |
             --max-turns 25
+            --permission-mode dontAsk
 
       - name: Publicar alterações
         run: |
