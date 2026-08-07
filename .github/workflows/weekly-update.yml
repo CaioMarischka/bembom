@@ -50,7 +50,8 @@ jobs:
         run: |
           git config user.name "plano-alimentar-bot"
           git config user.email "actions@users.noreply.github.com"
-          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" — e troque a última linha de "git push" para "git push origin HEAD:main"
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           git add data/ historico/
           git diff --cached --quiet || git commit -m "Atualização semanal automática: novo cardápio e mensagem motivacional"
+          git push origin HEAD:main
           git push
