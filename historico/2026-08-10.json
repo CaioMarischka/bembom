@@ -1,0 +1,92 @@
+{
+  "weekLabel": "17 a 23 de agosto",
+  "motivational": "Constância importa mais que perfeição: cada refeição nutritiva é um cuidado com o corpo que sustenta a energia do dia a dia. Vocês estão no caminho certo.",
+  "adults": [
+    {"day": "Segunda-feira", "meals": {
+      "Café da Manhã": {"txt": "Omelete de 3 ovos com queijo e tomate, pão integral", "g": "3 ovos (150g) · 20g queijo · 50g tomate · 2 fatias de pão integral (50g)"},
+      "Almoço": {"txt": "Sobrecoxa de frango grelhada, arroz, feijão e brócolis", "tag": {"c": "eco", "l": "mais barato"}, "g": "150g frango · 100g arroz · 80g feijão · 80g brócolis"},
+      "Lanche da Tarde": {"txt": "Shake de Whey Protein com mamão", "g": "30g whey (1 scoop) · 200ml leite ou água · 100g mamão"},
+      "Jantar": {"txt": "Carne em tiras grelhada com abobrinha refogada e arroz", "g": "150g carne em tiras · 150g abobrinha · 80g arroz"}
+    }},
+    {"day": "Terça-feira", "meals": {
+      "Café da Manhã": {"txt": "Crepioca (tapioca e 2 ovos) com queijo", "g": "2 ovos (100g) · 2 colheres de tapioca (30g) · 30g queijo"},
+      "Almoço": {"txt": "Fígado bovino acebolado, purê de batata doce e couve-flor", "tag": {"c": "new", "l": "novo"}, "g": "150g fígado bovino · 150g purê de batata doce · 100g couve-flor"},
+      "Lanche da Tarde": {"txt": "Iogurte natural com maçã picada", "g": "170g iogurte natural · 80g maçã picada"},
+      "Jantar": {"txt": "Peito de frango grelhado com espinafre refogado e arroz", "g": "150g peito de frango · 80g espinafre · 80g arroz"}
+    }},
+    {"day": "Quarta-feira", "meals": {
+      "Café da Manhã": {"txt": "Mingau de aveia com Whey Protein e banana", "g": "40g aveia em flocos · 200ml leite · 30g whey (1 scoop) · 1 banana (100g)"},
+      "Almoço": {"txt": "Sobrecoxa de frango assada, arroz e salada de repolho e cenoura", "tag": {"c": "eco", "l": "mais barato"}, "g": "150g sobrecoxa · 100g arroz · 80g repolho e cenoura"},
+      "Lanche da Tarde": {"txt": "Tapioca recheada com queijo e frango desfiado", "g": "1 tapioca (30g) · 30g queijo · 80g frango desfiado"},
+      "Jantar": {"txt": "Bife de carne magra grelhado com abóbora e arroz", "g": "150g bife magro · 150g abóbora · 80g arroz"}
+    }},
+    {"day": "Quinta-feira", "meals": {
+      "Café da Manhã": {"txt": "Pão integral com 2 ovos mexidos e queijo", "g": "2 fatias de pão integral (50g) · 2 ovos (100g) · 20g queijo"},
+      "Almoço": {"txt": "Frango desfiado com feijão, arroz e couve-flor", "g": "150g frango desfiado · 80g feijão · 100g arroz · 100g couve-flor"},
+      "Lanche da Tarde": {"txt": "Shake de Whey Protein com maçã", "g": "30g whey (1 scoop) · 1 maçã (120g)"},
+      "Jantar": {"txt": "Escondidinho de batata doce com carne moída", "g": "150g carne moída · 200g purê de batata doce"}
+    }},
+    {"day": "Sexta-feira", "meals": {
+      "Café da Manhã": {"txt": "Vitamina de frutas com aveia (sem whey)", "g": "200ml leite · 100g fruta · 30g aveia"},
+      "Almoço": {"txt": "Sardinha ou atum grelhado, arroz e repolho", "tag": {"c": "new", "l": "novo"}, "g": "1 lata de sardinha/atum (120g) · 100g arroz · 80g repolho"},
+      "Lanche da Tarde": {"txt": "Iogurte natural com banana e aveia", "g": "170g iogurte natural · 1 banana (100g) · 15g aveia"},
+      "Jantar": {"txt": "Peito de frango grelhado com brócolis e batata", "g": "150g peito de frango · 100g brócolis · 100g batata"}
+    }},
+    {"day": "Sábado", "meals": {
+      "Café da Manhã": {"txt": "Tapioca com ovos cozidos e queijo", "g": "2 ovos cozidos (100g) · 1 tapioca (30g) · 20g queijo"},
+      "Almoço": {"txt": "Bife de carne magra grelhado, arroz, feijão e legumes", "g": "150g bife magro · 100g arroz · 80g feijão · 80g legumes"},
+      "Lanche da Tarde": {"txt": "Iogurte natural com frutas e aveia", "g": "170g iogurte · 80g frutas · 15g aveia"},
+      "Jantar": {"txt": "Hambúrguer caseiro (carne moída) com pão integral e salada", "g": "150g carne moída · 2 fatias de pão integral (50g) · salada à vontade"}
+    }},
+    {"day": "Domingo", "meals": {
+      "Café da Manhã": {"txt": "Panquecas de aveia com banana (sem whey)", "g": "60g aveia (massa) · 2 ovos · 1 banana amassada (100g)"},
+      "Almoço": {"txt": "Frango assado (coxa/sobrecoxa), batata e salada verde", "tag": {"c": "eco", "l": "mais barato"}, "g": "150g frango assado · 150g batata · salada à vontade"},
+      "Lanche da Tarde": {"txt": "Shake de Whey Protein", "g": "30g whey (1 scoop) · 200ml leite ou água"},
+      "Jantar": {"txt": "Carne em cubos refogada com legumes e arroz", "g": "150g carne em cubos · 100g legumes · 80g arroz"}
+    }}
+  ],
+  "kids": [
+    {"day": "Segunda-feira", "meals": {
+      "Café da Manhã": {"txt": "1 a 2 ovos mexidos com queijo e pão integral", "g": "1-2 ovos (50-100g) · 15g queijo · 1 fatia de pão integral (25g)"},
+      "Almoço": {"txt": "Frango em cubos, arroz, feijão e brócolis bem picado", "g": "80g frango em cubos · 60g arroz · 50g feijão · 40g brócolis"},
+      "Lanche da Tarde": {"txt": "Iogurte natural com mamão amassado", "g": "100g iogurte natural · 50g mamão"},
+      "Jantar": {"txt": "Carne moída com abobrinha refogada (porção menor)", "g": "70g carne moída · 100g abobrinha"}
+    }},
+    {"day": "Terça-feira", "meals": {
+      "Café da Manhã": {"txt": "Tapioca com queijo branco", "g": "1 tapioca pequena (20g) · 20g queijo branco"},
+      "Almoço": {"txt": "Carne moída com purê de batata doce e couve-flor bem picada", "g": "70g carne moída · 100g purê de batata doce · 50g couve-flor"},
+      "Lanche da Tarde": {"txt": "Fruta da estação", "g": "1 maçã pequena (80g)"},
+      "Jantar": {"txt": "Frango desfiado com espinafre refogado", "g": "70g frango desfiado · 60g espinafre"}
+    }},
+    {"day": "Quarta-feira", "meals": {
+      "Café da Manhã": {"txt": "Mingau de aveia com leite e banana amassada", "g": "25g aveia · 150ml leite · 50g banana"},
+      "Almoço": {"txt": "Sobrecoxa de frango desfiada, arroz e salada leve de cenoura", "g": "80g frango desfiado · 60g arroz · 30g cenoura"},
+      "Lanche da Tarde": {"txt": "Tapioca com queijo e frango desfiado (porção menor)", "g": "1 tapioca pequena (20g) · 20g queijo · 40g frango desfiado"},
+      "Jantar": {"txt": "Bife picadinho com abóbora e arroz (porção infantil)", "g": "70g bife picadinho · 100g abóbora · 50g arroz"}
+    }},
+    {"day": "Quinta-feira", "meals": {
+      "Café da Manhã": {"txt": "Pão integral com 1 ovo mexido e queijo", "g": "1 fatia de pão integral (25g) · 1 ovo (50g) · 15g queijo"},
+      "Almoço": {"txt": "Frango desfiado com feijão, arroz e couve-flor bem cozida", "g": "80g frango desfiado · 50g feijão · 60g arroz · 50g couve-flor"},
+      "Lanche da Tarde": {"txt": "Vitamina de fruta com leite", "g": "150ml leite · 80g maçã"},
+      "Jantar": {"txt": "Escondidinho de batata doce com carne moída (porção infantil)", "g": "70g carne moída · 100g purê de batata doce"}
+    }},
+    {"day": "Sexta-feira", "meals": {
+      "Café da Manhã": {"txt": "Vitamina de frutas com leite", "g": "150ml leite · 80g fruta"},
+      "Almoço": {"txt": "Frango grelhado picadinho, arroz e repolho refogado", "g": "80g frango picadinho · 60g arroz · 40g repolho refogado"},
+      "Lanche da Tarde": {"txt": "Iogurte natural com banana amassada e aveia", "g": "100g iogurte · 50g banana · 10g aveia"},
+      "Jantar": {"txt": "Frango desfiado com brócolis e batata (porção infantil)", "g": "70g frango desfiado · 60g brócolis · 60g batata"}
+    }},
+    {"day": "Sábado", "meals": {
+      "Café da Manhã": {"txt": "Tapioca com 1 ovo cozido e queijo", "g": "1 ovo cozido (50g) · 1 tapioca pequena (20g) · 15g queijo"},
+      "Almoço": {"txt": "Bife acebolado picadinho, arroz, feijão e legumes", "g": "70g bife picadinho · 60g arroz · 50g feijão · 40g legumes"},
+      "Lanche da Tarde": {"txt": "Iogurte natural com frutas", "g": "100g iogurte · 60g frutas"},
+      "Jantar": {"txt": "Mini hambúrguer caseiro (carne moída) com pão integral e salada", "g": "70g carne moída · 1 fatia de pão integral (25g) · salada leve"}
+    }},
+    {"day": "Domingo", "meals": {
+      "Café da Manhã": {"txt": "Panquecas de aveia com banana", "g": "30g aveia (massa) · 1 ovo · 50g banana amassada"},
+      "Almoço": {"txt": "Frango assado desfiado, batata e salada leve", "g": "80g frango desfiado · 80g batata · salada leve (30g)"},
+      "Lanche da Tarde": {"txt": "Fruta ou iogurte", "g": "1 fruta (80g) ou 100g iogurte"},
+      "Jantar": {"txt": "Carne em cubos com legumes e arroz (porção infantil)", "g": "70g carne em cubos · 60g legumes · 50g arroz"}
+    }}
+  ]
+}
