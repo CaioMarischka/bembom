@@ -1,0 +1,67 @@
+name: Gerar Prévia da Próxima Semana
+
+on:
+  schedule:
+    # toda quinta-feira às 09:00 UTC = 06:00 no horário de Brasília
+    # (4 dias antes da segunda-feira em que a semana entra em vigor)
+    - cron: '0 9 * * 4'
+  workflow_dispatch: {}   # permite rodar manualmente pela aba "Actions" também
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  gerar-previa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+
+      - name: Pedir para o Claude Code gerar a prévia da próxima semana
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Você vai gerar a PRÉVIA do cardápio da próxima semana em data/next-week.json.
+
+            IMPORTANTE: hoje NÃO é o dia em que essa semana entra em vigor — é só uma prévia
+            antecipada, gerada com 4 dias de antecedência. A semana atual (data/current-week.json)
+            continua valendo normalmente e NÃO deve ser alterada por você.
+
+            REGRAS OBRIGATÓRIAS:
+            1. NUNCA edite index.html, nem nenhum arquivo CSS/JS de layout.
+            2. NUNCA edite data/current-week.json nem nada em historico/ — isso é feito por uma
+               automação separada, que roda toda segunda-feira.
+            3. Use o comando `date` (Bash) para descobrir a data de hoje, calcule a data da PRÓXIMA
+               segunda-feira a partir de hoje, e use o intervalo dessa segunda até o domingo seguinte
+               como "weekLabel" (ex: "17 a 23 de agosto").
+            4. Escreva data/next-week.json do zero com a MESMA estrutura JSON de data/current-week.json
+               (weekLabel, motivational, adults[7], kids[7], cada dia com meals: "Café da Manhã",
+               "Almoço", "Lanche da Tarde", "Jantar", cada refeição com "txt" e "g" — o campo "g" é a
+               gramatura sugerida por ingrediente, ex: "150g frango · 100g arroz · 80g feijão").
+            5. Leia data/current-week.json só como referência, para variar as combinações e não repetir
+               os mesmos pratos da semana que está rolando agora.
+            6. As novas receitas devem usar SOMENTE ingredientes que aparecem em data/shopping.json (a
+               lista de compras da família). Não introduza proteínas, carboidratos ou laticínios que não
+               estejam nessa lista — o objetivo é manter o orçamento mensal estável. Pode variar o modo
+               de preparo e as combinações livremente.
+            7. Mantenha para os adultos: alto teor proteico (~150g de proteína por refeição principal), e
+               para as crianças: porções menores (60-90g de proteína por refeição principal), pratos mais
+               simples, e NUNCA inclua whey protein nas refeições das crianças.
+            8. Escreva uma nova frase motivacional curta (1-2 frases, em português, tom acolhedor e
+               realista, focada em saúde do corpo e consistência — nunca em peso, estética ou culpa) para
+               o campo "motivational".
+            9. Garanta que data/next-week.json é um JSON válido.
+          claude_args: |
+            --max-turns 25
+            --permission-mode bypassPermissions
+
+      - name: Publicar alterações
+        run: |
+          git config user.name "plano-alimentar-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git add data/next-week.json
+          git diff --cached --quiet || git commit -m "Prévia da próxima semana disponível"
+          git push origin HEAD:main

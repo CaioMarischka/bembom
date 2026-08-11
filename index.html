@@ -243,6 +243,7 @@
   <nav class="tabs">
     <button class="tab-btn active" data-tab="adults">Adultos</button>
     <button class="tab-btn" data-tab="kids">Crianças</button>
+    <button class="tab-btn" data-tab="next">Próxima Semana</button>
     <button class="tab-btn" data-tab="shopping">Compras</button>
     <button class="tab-btn" data-tab="historico">Histórico</button>
     <button class="tab-btn" data-tab="changes">O que mudou</button>
@@ -250,6 +251,10 @@
 
   <section class="panel active" id="panel-adults"><div class="loading-note">carregando cardápio…</div></section>
   <section class="panel" id="panel-kids"><div class="loading-note">carregando cardápio…</div></section>
+
+  <section class="panel" id="panel-next">
+    <div id="next-week-content"><div class="loading-note">carregando prévia…</div></div>
+  </section>
 
   <section class="panel" id="panel-shopping">
     <div class="progress-bar">
@@ -411,6 +416,29 @@ function renderDaysInto(el, data){
   el.innerHTML = html;
 }
 
+function renderNextWeek(week){
+  const el = document.getElementById("next-week-content");
+  if(!week){
+    el.innerHTML = `<div class="hist-empty">Ainda não há prévia disponível.<br>A próxima leva é gerada toda quinta-feira e passa a valer na segunda-feira seguinte — enquanto isso, a semana atual continua valendo normalmente.</div>`;
+    return;
+  }
+  let html = `<div class="note-box" style="background:#F7E7EB;border-color:#EAC3CE;color:var(--berry-dark);">
+    Prévia da próxima semana (<strong>${week.weekLabel}</strong>) — ainda não está em vigor. Ela substitui o cardápio atual automaticamente na próxima segunda-feira, dando tempo de organizar as compras com antecedência.
+  </div>`;
+  html += `<div style="margin-top:4px;"><strong style="font-size:12px;color:var(--forest);font-family:'JetBrains Mono',monospace;text-transform:uppercase;">Adultos</strong></div>`;
+  el.innerHTML = html;
+  const tmp1 = document.createElement("div");
+  el.appendChild(tmp1);
+  renderDaysInto(tmp1, week.adults);
+  const lbl2 = document.createElement("div");
+  lbl2.style = "margin-top:14px;";
+  lbl2.innerHTML = `<strong style="font-size:12px;color:var(--berry);font-family:'JetBrains Mono',monospace;text-transform:uppercase;">Crianças</strong>`;
+  el.appendChild(lbl2);
+  const tmp2 = document.createElement("div");
+  el.appendChild(tmp2);
+  renderDaysInto(tmp2, week.kids);
+}
+
 // changes (static)
 const chEl = document.getElementById("changes-list");
 let chHtml = "";
@@ -451,6 +479,12 @@ async function init(){
     renderHistorico(manifest);
   }catch(e){
     renderHistorico([]);
+  }
+  try{
+    const next = await (await fetch("data/next-week.json")).json();
+    renderNextWeek(next);
+  }catch(e){
+    renderNextWeek(null);
   }
 }
 init();

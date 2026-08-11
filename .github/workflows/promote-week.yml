@@ -1,0 +1,34 @@
+name: Promover Próxima Semana
+
+on:
+  schedule:
+    # toda segunda-feira às 09:00 UTC = 06:00 no horário de Brasília
+    - cron: '0 9 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  promover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Promover next-week.json para current-week.json
+        run: node .github/scripts/promote-week.mjs
+
+      - name: Publicar alterações
+        run: |
+          git config user.name "plano-alimentar-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git add data/ historico/
+          git diff --cached --quiet || git commit -m "Promoção semanal: nova semana entra em vigor"
+          git push origin HEAD:main
