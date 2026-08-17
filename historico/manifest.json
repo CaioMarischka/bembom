@@ -1,4 +1,17 @@
 [
-  {"label": "17 a 23 de agosto", "date": "2026-08-10", "file": "historico/2026-08-10.json"},
-  {"label": "10 a 16 de agosto", "date": "2026-08-07", "file": "historico/2026-08-07.json"}
+  {
+    "label": "10 a 16 de agosto",
+    "date": "2026-08-17",
+    "file": "historico/2026-08-17.json"
+  },
+  {
+    "label": "17 a 23 de agosto",
+    "date": "2026-08-10",
+    "file": "historico/2026-08-10.json"
+  },
+  {
+    "label": "10 a 16 de agosto",
+    "date": "2026-08-07",
+    "file": "historico/2026-08-07.json"
+  }
 ]
