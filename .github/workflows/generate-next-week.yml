@@ -18,6 +18,11 @@ jobs:
       - name: Baixar o repositório
         uses: actions/checkout@v4
 
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Pedir para o Claude Code gerar a prévia da próxima semana
         uses: anthropics/claude-code-action@v1
         with:
@@ -46,6 +51,18 @@ jobs:
                lista de compras da família). Não introduza proteínas, carboidratos ou laticínios que não
                estejam nessa lista — o objetivo é manter o orçamento mensal estável. Pode variar o modo
                de preparo e as combinações livremente.
+            6b. COERÊNCIA CULINÁRIA (importante): cada refeição precisa fazer sentido como prato real de
+               cozinha caseira brasileira — não é só encaixar itens aprovados numa frase. Regras específicas:
+               - Feijão NUNCA aparece sozinho: sempre vem acompanhado de arroz no mesmo prato.
+               - Pense em "prato composto": proteína principal + acompanhamento de carboidrato (arroz,
+                 batata, macarrão) + vegetal/salada. Evite empilhar 2 carboidratos pesados sem necessidade
+                 (ex: arroz + batata + macarrão juntos), a menos que seja claramente um prato único
+                 tradicional (ex: escondidinho, que já é batata + carne).
+               - Escreva o texto do prato deixando claro o papel de cada item, por exemplo "Sobrecoxa de
+                 frango grelhada, acompanhada de arroz, feijão e salada de abobrinha" em vez de uma lista
+                 ambígua tipo "frango grelhado com abobrinha e feijão".
+               - Antes de finalizar cada refeição, se pergunte: "uma pessoa realmente serviria esse prato
+                 assim, ou parece uma lista aleatória de itens do estoque?" Se parecer aleatório, ajuste.
             7. Mantenha para os adultos: alto teor proteico (~150g de proteína por refeição principal), e
                para as crianças: porções menores (60-90g de proteína por refeição principal), pratos mais
                simples, e NUNCA inclua whey protein nas refeições das crianças.
@@ -58,10 +75,23 @@ jobs:
             --permission-mode bypassPermissions
 
       - name: Publicar alterações
+        id: publish
         run: |
           git config user.name "plano-alimentar-bot"
           git config user.email "actions@users.noreply.github.com"
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           git add data/next-week.json
-          git diff --cached --quiet || git commit -m "Prévia da próxima semana disponível"
-          git push origin HEAD:main
+          if git diff --cached --quiet; then
+            echo "Nada novo para publicar."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "Prévia da próxima semana disponível"
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Avisar por e-mail que a prévia está pronta
+        if: steps.publish.outputs.changed == 'true'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: node .github/scripts/notify-preview-ready.mjs
