@@ -34,6 +34,8 @@ function findItem(text) {
 
 function segmentProtein(seg) {
   const t = norm(seg);
+  // itens sem peso definido (ex.: "salada à vontade") não contam proteína
+  if (/(^|[^a-z])(a vontade|a gosto|livre)([^a-z]|$)/.test(t)) return { p: 0 };
   const hit = findItem(t);
   if (!hit) return { error: `ingrediente não reconhecido: "${seg.trim()}"` };
   if (hit.p100 === 0) return { p: 0 }; // temperos, água, azeite…

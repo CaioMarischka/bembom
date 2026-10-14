@@ -5,7 +5,8 @@
     {"name": "Carne moída magra (patinho)", "qty": "1 kg/sem · 4 kg/mês", "obs": "Reduzido de 2kg/semana — usado 2x/semana"},
     {"name": "Carne em tiras ou bifes magros", "qty": "0,8 kg/sem · 3,2 kg/mês", "obs": "Reduzido, complementado com fígado e enlatados"},
     {"name": "Fígado bovino", "qty": "0,4 kg/sem · 1,6 kg/mês", "obs": "Item novo — proteína muito barata, rica em ferro"},
-    {"name": "Sardinha ou atum enlatados", "qty": "3 latas/sem · 12/mês", "obs": "Item novo — substitui carne 1x/semana"},
+    {"name": "Sardinha ou atum enlatados", "qty": "4 latas/sem · 16/mês", "obs": "Substitui carne 1x/semana — mais 1 lata por causa do pai"},
+    {"name": "Filé de tilápia (congelado)", "qty": "1,6 kg/sem · 6,4 kg/mês", "obs": "Item novo — peixe magro e barato, entra 2x/semana no jantar"},
     {"name": "Ovos", "qty": "70 un/sem · 280/mês", "obs": "Aumentado — proteína mais barata por grama"}
   ]},
   {"cat": "Suplementação", "items": [
@@ -19,6 +20,7 @@
   {"cat": "Carboidratos", "items": [
     {"name": "Arroz", "qty": "1 kg/sem · 4 kg/mês", "obs": "Mantido — já era econômico"},
     {"name": "Feijão", "qty": "700 g/sem · 2,8 kg/mês", "obs": "Aumentado — proteína vegetal muito barata"},
+    {"name": "Lentilha", "qty": "300 g/sem · 1,2 kg/mês", "obs": "Item novo — proteína vegetal barata e rica em fibra, entra 2x/semana no lugar do feijão"},
     {"name": "Batata / Batata Doce / Abóbora", "qty": "2,5 kg/sem · 10 kg/mês", "obs": "Sem alteração"},
     {"name": "Aveia em flocos ou farelo", "qty": "500 g/sem · 2 kg/mês", "obs": "Levemente reduzido — menos usada em shakes"},
     {"name": "Tapioca e Pão Integral", "qty": "1,5 pct cada/sem · 6/mês", "obs": "Ajustado à demanda real"}

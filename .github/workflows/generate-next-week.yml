@@ -1,11 +1,13 @@
 name: Gerar Prévia da Próxima Semana
 
 on:
-  schedule:
-    # toda quinta-feira às 09:00 UTC = 06:00 no horário de Brasília
-    # (4 dias antes da segunda-feira em que a semana entra em vigor)
-    - cron: '0 9 * * 4'
-  workflow_dispatch: {}   # permite rodar manualmente pela aba "Actions" também
+  # Roda sozinho logo depois que "Promover Próxima Semana" termina com sucesso
+  # (toda segunda-feira, 06:00 no horário de Brasília). Assim a prévia da semana seguinte
+  # fica à vista durante os 7 dias da semana atual, em vez de só 4 dias.
+  workflow_run:
+    workflows: ["Promover Próxima Semana"]
+    types: [completed]
+  workflow_dispatch: {}   # também dá para rodar à mão, pela aba "Actions"
 
 permissions:
   contents: write
@@ -13,6 +15,8 @@ permissions:
 
 jobs:
   gerar-previa:
+    # só segue se a promoção deu certo (ou se foi acionado à mão)
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Baixar o repositório
@@ -30,21 +34,24 @@ jobs:
           prompt: |
             Você vai gerar a PRÉVIA do cardápio da próxima semana em data/next-week.json.
 
-            IMPORTANTE: hoje NÃO é o dia em que essa semana entra em vigor — é só uma prévia
-            antecipada, gerada com 4 dias de antecedência. A semana atual (data/current-week.json)
-            continua valendo normalmente e NÃO deve ser alterada por você.
+            IMPORTANTE: essa semana AINDA NÃO está em vigor — é uma prévia antecipada. A semana
+            atual (data/current-week.json) continua valendo normalmente e NÃO deve ser alterada por você.
 
             REGRAS OBRIGATÓRIAS:
             1. NUNCA edite index.html, nem nenhum arquivo CSS/JS de layout.
             2. NUNCA edite data/current-week.json nem nada em historico/ — isso é feito por uma
                automação separada, que roda toda segunda-feira.
-            3. Use o comando `date` (Bash) para descobrir a data de hoje, calcule a data da PRÓXIMA
-               segunda-feira a partir de hoje, e use o intervalo dessa segunda até o domingo seguinte
-               como "weekLabel" (ex: "17 a 23 de agosto").
+            3. A prévia é da semana que vem logo DEPOIS da semana descrita em data/current-week.json
+               ("weekLabel"). Use o comando `date` (Bash) só para saber o ano. Escreva o intervalo dessa
+               segunda até o domingo seguinte como "weekLabel" (ex: "19 a 25 de outubro" ou
+               "26 de outubro a 01 de novembro"). Se data/next-week.json já existir, sobrescreva.
             4. Escreva data/next-week.json do zero com a MESMA estrutura JSON de data/current-week.json
-               (weekLabel, motivational, adults[7], kids[7], cada dia com meals: "Café da Manhã",
-               "Almoço", "Lanche da Tarde", "Jantar", cada refeição com "txt" e "g" — o campo "g" é a
-               gramatura sugerida por ingrediente, ex: "150g frango · 100g arroz · 80g feijão").
+               e mais a lista "pai": weekLabel, motivational, adults[7], kids[7], pai[7]. Cada dia tem
+               "day" e "meals". Em adults e kids as refeições são "Café da Manhã", "Almoço",
+               "Lanche da Tarde" e "Jantar". Em pai são "Café da Manhã", "Almoço (na rua)",
+               "Lanche da Tarde (na rua)" e "Jantar" (use exatamente esses nomes). Cada refeição tem
+               "txt" (o prato) e "g" (a gramatura por ingrediente, ex: "150g frango · 100g arroz · 80g feijão").
+               NÃO escreva o campo "p" — ver regra 6c.
             5. Leia data/current-week.json só como referência, para variar as combinações e não repetir
                os mesmos pratos da semana que está rolando agora.
             6. NÃO há restrição de proteínas: use qualquer ingrediente, mas SEMPRE escolha a opção mais
@@ -53,17 +60,10 @@ jobs:
                carne de panela (acém, músculo), pernil suíno, sardinha e atum enlatados, peixe barato da
                estação (tilápia, pescada), leite, iogurte natural e queijo minas. EVITE cortes nobres e
                caros (picanha, filé mignon, contrafilé, alcatra, salmão, camarão) e embutidos/
-               ultraprocessados (linguiça, salsicha, mortadela, presunto). data/shopping.json é só a
-               referência de como a família compra hoje — itens novos são bem-vindos quando forem mais
-               baratos por grama de proteína. Varie modo de preparo e combinações livremente.
-            6c. PROTEÍNA POR REFEIÇÃO: o campo "p" de cada refeição NÃO é escrito por você — ele é
-               calculado por um script a partir do campo "g". Por isso, em "g" escreva SEMPRE a
-               quantidade em gramas de cada ingrediente (ex: "150g sobrecoxa · 100g arroz"; ovos como
-               "3 ovos (150g)"; whey como "30g whey (1 scoop)"). Depois de gravar data/next-week.json,
-               rode `node .github/scripts/add-protein.mjs data/next-week.json`. Se o script reclamar de
-               um ingrediente não reconhecido, acrescente-o em data/proteina-referencia.json (gramas de
-               proteína por 100 g do alimento pronto, valores da Tabela TACO) e rode de novo, até ele
-               terminar sem erro. Nunca escreva "p" à mão.
+               ultraprocessados (linguiça, salsicha, mortadela, presunto). data/shopping.json é a
+               referência de como a família compra hoje: prefira esses itens e só traga um ingrediente
+               novo quando for claramente mais barato por grama de proteína (e nesse caso acrescente-o
+               a data/shopping.json com a observação "Item novo"). Varie modo de preparo e combinações.
             6b. COERÊNCIA CULINÁRIA (importante): cada refeição precisa fazer sentido como prato real de
                cozinha caseira brasileira — não é só encaixar itens aprovados numa frase. Regras específicas:
                - Feijão NUNCA aparece sozinho: sempre vem acompanhado de arroz no mesmo prato.
@@ -76,8 +76,16 @@ jobs:
                  ambígua tipo "frango grelhado com abobrinha e feijão".
                - Antes de finalizar cada refeição, se pergunte: "uma pessoa realmente serviria esse prato
                  assim, ou parece uma lista aleatória de itens do estoque?" Se parecer aleatório, ajuste.
-            7. Metas de proteína (gramas de PROTEÍNA, não de comida): adultos ≈ 130 g/dia, com almoço e
-               jantar em torno de 40-50 g cada (≈ 150 g da proteína principal) e café da manhã e
+            6c. PROTEÍNA POR REFEIÇÃO: o campo "p" de cada refeição NÃO é escrito por você — ele é
+               calculado por um script a partir do campo "g". Por isso, em "g" escreva SEMPRE a
+               quantidade em gramas de cada ingrediente (ex: "150g sobrecoxa · 100g arroz"; ovos como
+               "3 ovos (150g)"; whey como "30g whey (1 scoop)"; itens sem peso como "salada à vontade").
+               Depois de gravar data/next-week.json, rode `node .github/scripts/add-protein.mjs data/next-week.json`.
+               Se o script reclamar de um ingrediente não reconhecido, acrescente-o em
+               data/proteina-referencia.json (gramas de proteína por 100 g do alimento pronto, valores da
+               Tabela TACO) e rode de novo, até ele terminar sem erro. Nunca escreva "p" à mão.
+            7. Metas de proteína (gramas de PROTEÍNA, não de comida): casal (adults) ≈ 130 g/dia, com
+               almoço e jantar em torno de 40-50 g cada (≈ 150 g da proteína principal) e café da manhã e
                lanche em torno de 15-30 g; crianças ≈ 55-65 g/dia, com almoço e jantar em torno de
                20-27 g cada (≈ 70 g da proteína principal). Pratos mais simples para as crianças, e
                NUNCA inclua whey protein nas refeições das crianças.
@@ -85,8 +93,33 @@ jobs:
                realista, focada em saúde do corpo e consistência — nunca em peso, estética ou culpa) para
                o campo "motivational".
             9. Garanta que data/next-week.json é um JSON válido.
+            10. LISTA "pai" (um terceiro adulto, 60+ anos, em recomposição corporal: perder gordura e
+               ganhar massa magra; trabalha na rua). Ele faz em casa o café da manhã e o jantar; o almoço e o
+               lanche da tarde são feitos na rua (restaurante por quilo, prato feito, padaria ou lanchonete;
+               a rota varia). Regras:
+               - Meta ≈ 120-140 g de proteína por dia: café da manhã, almoço e jantar com NO MÍNIMO
+                 ≈ 30 g cada (café ≈ 30, almoço ≈ 40, jantar ≈ 40) e lanche ≈ 20 g.
+               - Carboidrato em porção menor que a do casal (arroz ≈ 80 g cozido, nunca 2 carboidratos
+                 pesados no mesmo prato) e muita fibra: aveia, feijão, lentilha, grão-de-bico, frutas, folhas
+                 e legumes.
+                 Pouca gordura saturada e nenhuma gordura trans: carnes magras, frango sem pele, peixe
+                 (tilápia ou pescada, sardinha ou atum enlatados: 2-3x por semana), no máximo 1 ovo inteiro por dia, nada de
+                 vísceras, embutidos, frituras, açúcar adicionado ou suco de fruta; leite, iogurte e queijo
+                 magros e em quantidade moderada; azeite com moderação.
+               - Jantar: o MESMO prato dos adultos naquele dia, na porção dele, sempre que o prato servir
+                 nesses critérios; quando não servir, escreva um prato alternativo simples.
+               - Café da manhã: prático, com proteína, e que combine com os ingredientes da semana.
+               - "Almoço (na rua)" e "Lanche da Tarde (na rua)" são ORIENTAÇÕES de escolha, não receitas:
+                 "txt" diz como montar o prato ou o que pedir naquele tipo de lugar (varie entre por quilo,
+                 prato feito e padaria/lanchonete ao longo da semana, e inclua pelo menos uma opção para
+                 quando a rota atrapalha, ex: pão integral + ovo cozido + fruta); "g" traz gramas de
+                 referência de cada item, para o script calcular a proteína.
+               - Escreva em tom prático. NÃO cite idade, peso, doenças ou condições de saúde nos textos, e
+                 não faça afirmações médicas.
+            11. Os JANTARES dos adultos devem servir também ao pai (regra 10): prefira pratos magros e com
+               fibra; vísceras (fígado, moela, coração) e carnes gordas ficam só no almoço dos adultos.
           claude_args: |
-            --max-turns 25
+            --max-turns 30
             --permission-mode bypassPermissions
 
       - name: Calcular a proteína de cada refeição
@@ -100,7 +133,7 @@ jobs:
           git config user.name "plano-alimentar-bot"
           git config user.email "actions@users.noreply.github.com"
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-          git add data/next-week.json data/proteina-referencia.json
+          git add data/next-week.json data/proteina-referencia.json data/shopping.json
           if git diff --cached --quiet; then
             echo "Nada novo para publicar."
             echo "changed=false" >> "$GITHUB_OUTPUT"
