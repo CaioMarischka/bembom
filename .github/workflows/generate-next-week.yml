@@ -47,10 +47,23 @@ jobs:
                gramatura sugerida por ingrediente, ex: "150g frango · 100g arroz · 80g feijão").
             5. Leia data/current-week.json só como referência, para variar as combinações e não repetir
                os mesmos pratos da semana que está rolando agora.
-            6. As novas receitas devem usar SOMENTE ingredientes que aparecem em data/shopping.json (a
-               lista de compras da família). Não introduza proteínas, carboidratos ou laticínios que não
-               estejam nessa lista — o objetivo é manter o orçamento mensal estável. Pode variar o modo
-               de preparo e as combinações livremente.
+            6. NÃO há restrição de proteínas: use qualquer ingrediente, mas SEMPRE escolha a opção mais
+               barata por grama de proteína. Priorize: ovos, feijão, lentilha, grão-de-bico, coxa e
+               sobrecoxa de frango, moela, coração e fígado (frango ou bovino), carne moída de patinho/acém,
+               carne de panela (acém, músculo), pernil suíno, sardinha e atum enlatados, peixe barato da
+               estação (tilápia, pescada), leite, iogurte natural e queijo minas. EVITE cortes nobres e
+               caros (picanha, filé mignon, contrafilé, alcatra, salmão, camarão) e embutidos/
+               ultraprocessados (linguiça, salsicha, mortadela, presunto). data/shopping.json é só a
+               referência de como a família compra hoje — itens novos são bem-vindos quando forem mais
+               baratos por grama de proteína. Varie modo de preparo e combinações livremente.
+            6c. PROTEÍNA POR REFEIÇÃO: o campo "p" de cada refeição NÃO é escrito por você — ele é
+               calculado por um script a partir do campo "g". Por isso, em "g" escreva SEMPRE a
+               quantidade em gramas de cada ingrediente (ex: "150g sobrecoxa · 100g arroz"; ovos como
+               "3 ovos (150g)"; whey como "30g whey (1 scoop)"). Depois de gravar data/next-week.json,
+               rode `node .github/scripts/add-protein.mjs data/next-week.json`. Se o script reclamar de
+               um ingrediente não reconhecido, acrescente-o em data/proteina-referencia.json (gramas de
+               proteína por 100 g do alimento pronto, valores da Tabela TACO) e rode de novo, até ele
+               terminar sem erro. Nunca escreva "p" à mão.
             6b. COERÊNCIA CULINÁRIA (importante): cada refeição precisa fazer sentido como prato real de
                cozinha caseira brasileira — não é só encaixar itens aprovados numa frase. Regras específicas:
                - Feijão NUNCA aparece sozinho: sempre vem acompanhado de arroz no mesmo prato.
@@ -63,9 +76,11 @@ jobs:
                  ambígua tipo "frango grelhado com abobrinha e feijão".
                - Antes de finalizar cada refeição, se pergunte: "uma pessoa realmente serviria esse prato
                  assim, ou parece uma lista aleatória de itens do estoque?" Se parecer aleatório, ajuste.
-            7. Mantenha para os adultos: alto teor proteico (~150g de proteína por refeição principal), e
-               para as crianças: porções menores (60-90g de proteína por refeição principal), pratos mais
-               simples, e NUNCA inclua whey protein nas refeições das crianças.
+            7. Metas de proteína (gramas de PROTEÍNA, não de comida): adultos ≈ 130 g/dia, com almoço e
+               jantar em torno de 40-50 g cada (≈ 150 g da proteína principal) e café da manhã e
+               lanche em torno de 15-30 g; crianças ≈ 55-65 g/dia, com almoço e jantar em torno de
+               20-27 g cada (≈ 70 g da proteína principal). Pratos mais simples para as crianças, e
+               NUNCA inclua whey protein nas refeições das crianças.
             8. Escreva uma nova frase motivacional curta (1-2 frases, em português, tom acolhedor e
                realista, focada em saúde do corpo e consistência — nunca em peso, estética ou culpa) para
                o campo "motivational".
@@ -74,13 +89,18 @@ jobs:
             --max-turns 25
             --permission-mode bypassPermissions
 
+      - name: Calcular a proteína de cada refeição
+        # garantia: recalcula o campo "p" por script (0 créditos). Se algum ingrediente não for
+        # reconhecido, falha aqui — antes de publicar — e diz qual linha falta em data/proteina-referencia.json
+        run: node .github/scripts/add-protein.mjs data/next-week.json
+
       - name: Publicar alterações
         id: publish
         run: |
           git config user.name "plano-alimentar-bot"
           git config user.email "actions@users.noreply.github.com"
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-          git add data/next-week.json
+          git add data/next-week.json data/proteina-referencia.json
           if git diff --cached --quiet; then
             echo "Nada novo para publicar."
             echo "changed=false" >> "$GITHUB_OUTPUT"
