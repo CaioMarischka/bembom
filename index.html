@@ -1,15 +1,36 @@
 <!DOCTYPE html>
+<!--
+  BemBom — index.html
+  Versão: 2.0 (14/10/2026) · branch claude/melhorias-bembom
+  Mudou: aba "O que mudou" removida; período do topo vem do weekLabel do JSON;
+         proteína estimada por refeição (campo "p" nos JSONs) + total do dia + média;
+         tipografia maior e layout pensado primeiro para celular.
+  Dados: data/current-week.json · data/next-week.json · data/shopping.json · historico/manifest.json
+  Regra de ouro: a automação NUNCA edita este arquivo — só os JSONs.
+  Testado: renderização em 390px (celular) e 1280px (desktop); semanas antigas sem "p" continuam abrindo.
+  TODO: perfil do pai na aba Adultos · semanas futuras com antecedência · lista de compras por semana.
+-->
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:title" content="Bembom — Caio & Mariana">
-<meta property="og:description" content="Cardápio de alta proteína, orçamento sob controle e atualização automática toda semana.">
-<meta property="og:image" content="https://caiomarischka.github.io/bembom/og-image.png">
-<meta property="og:url" content="https://caiomarischka.github.io/bembom/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1F4A3D">
+<title>BemBom — Plano Alimentar da Família</title>
+<meta name="description" content="Cardápio da semana com proteína calculada em cada refeição, porções para adultos e crianças e orçamento sob controle.">
+<meta property="og:site_name" content="BemBom">
+<meta property="og:locale" content="pt_BR">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://caiomarischka.github.io/bembom/">
+<meta property="og:title" content="BemBom — Caio & Mariana">
+<meta property="og:description" content="O cardápio da semana com a proteína de cada refeição, porções para adultos e crianças e lista de compras. Atualizado toda semana.">
+<meta property="og:image" content="https://caiomarischka.github.io/bembom/og-image.png?v=2">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="BemBom: cardápio da semana da família, com a proteína de cada refeição.">
 <meta name="twitter:card" content="summary_large_image">
-<title>Plano Alimentar da Família</title>
+<meta name="twitter:title" content="BemBom — Caio & Mariana">
+<meta name="twitter:description" content="O cardápio da semana com a proteína de cada refeição, porções para adultos e crianças e lista de compras.">
+<meta name="twitter:image" content="https://caiomarischka.github.io/bembom/og-image.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -23,28 +44,34 @@
     --berry:#C74B67;
     --berry-dark:#9E3750;
     --ink:#22241F;
-    --ink-soft:#68695F;
+    --ink-soft:#5F6057;
     --line:#E1E1DC;
+    --prot-bg:#FFF3D6;
+    --prot-ink:#7A5606;
     --shadow: 0 1px 2px rgba(20,20,18,0.05), 0 8px 24px rgba(20,20,18,0.06);
   }
   *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--paper);
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(20,20,18,0.05) 1px, transparent 0);
-    background-size: 22px 22px;
+    background-image:radial-gradient(circle at 1px 1px, rgba(20,20,18,0.05) 1px, transparent 0);
+    background-size:22px 22px;
     color:var(--ink);
     font-family:'Space Grotesk', sans-serif;
+    font-size:16px;
     -webkit-font-smoothing:antialiased;
-    padding-bottom:64px;
+    -webkit-tap-highlight-color:transparent;
+    padding-bottom:calc(72px + env(safe-area-inset-bottom));
   }
-  .wrap{max-width:640px;margin:0 auto;padding:20px 16px 8px;}
+  .wrap{max-width:680px;margin:0 auto;padding:12px 16px 8px;}
+  button,label{touch-action:manipulation;}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:8px;}
 
-  header{padding:22px 4px 18px;}
+  header{padding:16px 2px 14px;}
   .eyebrow{
     font-family:'JetBrains Mono', monospace;
-    font-size:11.5px;
+    font-size:13px;
     letter-spacing:.14em;
     text-transform:uppercase;
     color:var(--forest);
@@ -53,150 +80,154 @@
     align-items:center;
     gap:8px;
   }
-  .eyebrow::before{content:"";width:16px;height:2px;background:var(--gold);display:inline-block;}
+  .eyebrow::before{content:"";width:18px;height:2px;background:var(--gold);display:inline-block;}
   h1{
-    font-family:'Space Grotesk', sans-serif;
     font-weight:700;
-    font-size:clamp(28px,7vw,38px);
+    font-size:clamp(30px,8.4vw,42px);
     line-height:1.04;
-    margin:10px 0 6px;
+    margin:8px 0 6px;
     color:var(--forest-dark);
     letter-spacing:-0.01em;
   }
-  .sub{font-size:14.5px;color:var(--ink-soft);max-width:46ch;line-height:1.5;}
+  .sub{font-size:15.5px;color:var(--ink-soft);max-width:46ch;line-height:1.45;margin:0;}
   .savings-badge{
-    margin-top:14px;
-    display:inline-flex;align-items:baseline;gap:8px;
+    margin-top:12px;
+    display:flex;align-items:center;gap:12px;
     background:var(--forest-dark);color:#F6F1E4;
-    padding:10px 16px;border-radius:100px;box-shadow:var(--shadow);
+    padding:12px 16px;border-radius:16px;box-shadow:var(--shadow);
   }
-  .savings-badge .num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--gold);}
-  .savings-badge .txt{font-size:12.5px;color:#DCE6DF;}
+  .savings-badge .num{font-weight:700;font-size:26px;color:var(--gold);line-height:1;}
+  .savings-badge .txt{font-size:14px;color:#DCE6DF;line-height:1.35;}
 
-  /* motivational banner */
+  /* mensagem da semana */
   .moti-banner{
     margin-top:14px;
     background:linear-gradient(135deg,var(--forest) 0%,var(--forest-dark) 100%);
     color:#F6F1E4;
     border-radius:16px;
-    padding:18px 20px;
+    padding:16px 18px;
     box-shadow:var(--shadow);
     position:relative;
     overflow:hidden;
   }
-  .moti-banner::before{
-    content:"✦";
-    position:absolute; right:14px; top:10px;
-    font-size:34px; color:rgba(227,167,43,0.25);
-  }
+  .moti-banner::before{content:"✦";position:absolute;right:14px;top:10px;font-size:34px;color:rgba(227,167,43,0.25);}
   .moti-label{
     font-family:'JetBrains Mono',monospace;
-    font-size:10.5px; text-transform:uppercase; letter-spacing:.12em;
-    color:var(--gold); font-weight:700; margin-bottom:6px;
+    font-size:12px;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--gold);font-weight:700;margin-bottom:6px;
   }
-  .moti-text{font-size:14.5px; line-height:1.55; max-width:48ch;}
-  .moti-week{font-size:11.5px; color:#B9C8BE; margin-top:8px; font-family:'JetBrains Mono',monospace;}
+  .moti-text{font-size:15.5px;line-height:1.5;max-width:48ch;padding-right:18px;}
+  .moti-week{font-size:13px;color:#C3D1C8;margin-top:8px;font-family:'JetBrains Mono',monospace;}
 
+  /* abas: barra fixa, rolagem lateral, alvo de toque ≥ 44px */
   nav.tabs{
-    position:sticky; top:0; z-index:20;
-    display:flex; gap:6px;
+    position:sticky;top:0;z-index:20;
+    display:flex;gap:8px;
     background:var(--paper);
-    padding:14px 0 12px; margin-top:4px;
-    overflow-x:auto; scrollbar-width:none;
+    margin:4px -16px 0;padding:10px 16px;
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    border-bottom:1px solid var(--line);
   }
   nav.tabs::-webkit-scrollbar{display:none;}
   nav.tabs button{
     flex:0 0 auto;
-    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13.5px;
-    color:var(--forest-dark); background:var(--card); border:1px solid var(--line);
-    padding:9px 16px; border-radius:100px; cursor:pointer; transition:all .15s ease; white-space:nowrap;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;
+    color:var(--forest-dark);background:var(--card);border:1px solid var(--line);
+    min-height:44px;padding:0 18px;border-radius:100px;cursor:pointer;transition:background .15s ease,color .15s ease;white-space:nowrap;
   }
-  nav.tabs button.active{background:var(--forest); border-color:var(--forest); color:#fff; box-shadow:var(--shadow);}
+  nav.tabs button.active{background:var(--forest);border-color:var(--forest);color:#fff;box-shadow:var(--shadow);}
 
-  section.panel{display:none;animation:fade .25s ease;}
+  section.panel{display:none;animation:fade .25s ease;padding-top:14px;}
   section.panel.active{display:block;}
   @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  @media (prefers-reduced-motion:reduce){section.panel{animation:none;}.progress-fill{transition:none;}}
 
+  /* resumo de proteína */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px;}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);}
+  .stat .n{font-weight:700;font-size:26px;color:var(--forest-dark);line-height:1.1;}
+  .stat .n small{font-size:15px;font-weight:600;color:var(--ink-soft);margin-left:3px;}
+  .stat .l{font-size:14px;color:var(--ink-soft);margin-top:4px;line-height:1.35;}
+  #panel-kids .stat .n{color:var(--berry-dark);}
+
+  /* dias e refeições */
   .day-card{
-    background:var(--card); border:1px solid var(--line); border-radius:16px;
-    margin-bottom:14px; box-shadow:var(--shadow); overflow:hidden; position:relative;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    margin-bottom:14px;box-shadow:var(--shadow);overflow:hidden;position:relative;
   }
   .day-card::before{content:"";position:absolute;top:0;left:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--gold),var(--forest));}
   .day-head{
-    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16.5px; color:var(--forest-dark);
-    padding:14px 18px 10px 22px; display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px 12px 22px;display:flex;justify-content:space-between;align-items:center;gap:6px 10px;flex-wrap:wrap;
   }
-  .day-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);font-weight:500;}
-  .meal-row{
-    display:grid; grid-template-columns:34px 84px 1fr; gap:2px 10px; align-items:start;
-    padding:9px 18px 9px 22px; border-top:1px dashed var(--line);
+  .day-name{font-weight:700;font-size:19px;color:var(--forest-dark);}
+  .day-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);font-weight:500;margin-left:8px;}
+  .day-total{background:var(--forest-dark);color:#E8EFEA;border-radius:100px;padding:5px 12px;font-size:13px;white-space:nowrap;}
+  .day-total b{color:var(--gold);font-size:15px;}
+
+  .meal{padding:12px 16px 14px 22px;border-top:1px dashed var(--line);}
+  .meal-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .meal-top .ic{font-size:19px;line-height:1;}
+  .meal-top .lbl{
+    flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:uppercase;
+    letter-spacing:.05em;color:var(--ink-soft);font-weight:600;
   }
-  .meal-row .ic{font-size:17px;line-height:1.4;}
-  .meal-row .lbl{
-    font-family:'JetBrains Mono',monospace;font-size:10.5px;text-transform:uppercase;
-    letter-spacing:.04em;color:var(--ink-soft);font-weight:600;padding-top:2px;
+  .prot{
+    font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--prot-ink);
+    background:var(--prot-bg);padding:3px 10px;border-radius:100px;white-space:nowrap;
   }
-  .meal-row .txt{font-size:14px;line-height:1.42;color:var(--ink);font-weight:500;}
-  .meal-row .g{
-    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--forest);background:#EAF3E4;
-    display:inline-block;margin-top:5px;padding:3px 8px;border-radius:7px;line-height:1.5;
+  .meal .txt{font-size:16.5px;line-height:1.45;color:var(--ink);font-weight:500;}
+  .meal .g{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--forest);background:#EAF3E4;
+    display:inline-block;margin-top:8px;padding:4px 10px;border-radius:8px;line-height:1.5;
   }
   .tag{
-    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;
-    letter-spacing:.02em;padding:1.5px 7px;border-radius:100px;margin-left:6px;vertical-align:1px;white-space:nowrap;
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+    letter-spacing:.02em;padding:2px 8px;border-radius:100px;margin-left:6px;vertical-align:1px;white-space:nowrap;
   }
   .tag.eco{background:#EAF3E4;color:var(--forest-dark);}
   .tag.new{background:#FBEEDD;color:var(--gold-dark);}
 
   #panel-kids .day-card::before{background:linear-gradient(180deg,var(--berry),var(--forest));}
-  #panel-kids .meal-row .g{background:#F7E7EB;color:var(--berry-dark);}
+  #panel-kids .meal .g{background:#F7E7EB;color:var(--berry-dark);}
   .note-box{
-    background:#FBEEDD;border:1px solid #F0DBB2;border-radius:12px;padding:13px 16px;
-    font-size:13px;line-height:1.5;color:#6B4E12;margin:6px 0 18px;
+    background:#FBEEDD;border:1px solid #F0DBB2;border-radius:12px;padding:14px 16px;
+    font-size:14px;line-height:1.5;color:#6B4E12;margin:6px 0 10px;
   }
+  .note-box.green{background:#EAF3E4;border-color:#CFE3C4;color:#1F4A3D;}
+  .note-box.berry{background:#F7E7EB;border-color:#EAC3CE;color:var(--berry-dark);}
+  .sec-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--forest);margin:16px 0 4px;}
+  .sec-label.kids{color:var(--berry);}
 
+  /* compras */
   .progress-bar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px;box-shadow:var(--shadow);}
-  .progress-top{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);margin-bottom:8px;font-weight:600;}
+  .progress-top{display:flex;justify-content:space-between;font-size:14px;color:var(--ink-soft);margin-bottom:8px;font-weight:600;}
   .progress-top span.count{font-family:'JetBrains Mono',monospace;color:var(--forest-dark);}
-  .progress-track{height:8px;background:var(--line);border-radius:100px;overflow:hidden;}
+  .progress-track{height:10px;background:var(--line);border-radius:100px;overflow:hidden;}
   .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--forest));width:0%;transition:width .3s ease;}
 
   .cat-block{margin-bottom:20px;}
   .cat-title{
-    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
     color:var(--forest);font-weight:700;margin:0 0 8px 4px;display:flex;align-items:center;gap:8px;
   }
   .cat-title::after{content:"";flex:1;height:1px;background:var(--line);}
   .item-card{
-    display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--line);
-    border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow);
+    display:flex;align-items:flex-start;gap:14px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:14px 16px;margin-bottom:8px;box-shadow:var(--shadow);cursor:pointer;
   }
   .item-card input[type=checkbox]{
-    appearance:none;-webkit-appearance:none;width:20px;height:20px;flex:0 0 20px;
-    border:2px solid var(--forest);border-radius:6px;margin-top:2px;cursor:pointer;position:relative;transition:background .15s;
+    appearance:none;-webkit-appearance:none;width:26px;height:26px;flex:0 0 26px;margin:0;
+    border:2px solid var(--forest);border-radius:7px;cursor:pointer;position:relative;transition:background .15s;
   }
   .item-card input[type=checkbox]:checked{background:var(--forest);}
-  .item-card input[type=checkbox]:checked::after{content:"✓";color:#fff;font-size:13px;font-weight:700;position:absolute;left:3px;top:-1px;}
-  .item-body{flex:1;}
-  .item-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap;}
-  .item-name{font-weight:600;font-size:14.5px;color:var(--ink);}
-  .item-qty{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--forest-dark);font-weight:600;white-space:nowrap;}
-  .item-obs{font-size:12.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4;}
+  .item-card input[type=checkbox]:checked::after{content:"✓";color:#fff;font-size:16px;font-weight:700;position:absolute;left:5px;top:0;}
+  .item-body{flex:1;display:block;}
+  .item-top{display:flex;justify-content:space-between;gap:4px 10px;align-items:baseline;flex-wrap:wrap;}
+  .item-name{font-weight:600;font-size:16.5px;color:var(--ink);}
+  .item-qty{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--forest-dark);font-weight:600;}
+  .item-obs{display:block;font-size:14px;color:var(--ink-soft);margin-top:4px;line-height:1.4;}
   .item-card.checked .item-name,.item-card.checked .item-qty{text-decoration:line-through;opacity:.45;}
-  .item-card.checked .item-obs{opacity:.35;}
-
-  .change-card{
-    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;
-    box-shadow:var(--shadow);display:grid;grid-template-columns:26px 1fr;gap:4px 12px;
-  }
-  .change-card .icon{font-size:19px;}
-  .change-card .what{font-weight:700;font-size:14.5px;color:var(--forest-dark);line-height:1.35;}
-  .change-card .why{grid-column:2;font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:2px;}
-  .big-savings{
-    margin-top:6px;background:var(--forest-dark);color:#F6F1E4;border-radius:16px;padding:22px 20px;text-align:center;
-  }
-  .big-savings .n{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:44px;color:var(--gold);line-height:1;}
-  .big-savings .l{font-size:13px;color:#DCE6DF;margin-top:8px;line-height:1.5;max-width:36ch;margin-left:auto;margin-right:auto;}
+  .item-card.checked .item-obs{opacity:.4;}
 
   /* histórico */
   .hist-item{
@@ -204,31 +235,36 @@
     box-shadow:var(--shadow);overflow:hidden;
   }
   .hist-head{
-    display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px;cursor:pointer;min-height:56px;
   }
-  .hist-head .l{font-weight:600;font-size:14.5px;color:var(--forest-dark);}
-  .hist-head .d{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);}
-  .hist-head .arrow{font-size:13px;color:var(--forest);transition:transform .2s ease;}
+  .hist-head .l{font-weight:600;font-size:16px;color:var(--forest-dark);}
+  .hist-head .d{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);white-space:nowrap;}
+  .hist-head .arrow{font-size:15px;color:var(--forest);display:inline-block;transition:transform .2s ease;}
   .hist-item.open .arrow{transform:rotate(90deg);}
-  .hist-body{display:none;padding:0 16px 16px;}
+  .hist-body{display:none;padding:0 12px 14px;}
   .hist-item.open .hist-body{display:block;}
+  .hist-body .day-card{margin-top:8px;margin-bottom:0;}
   .hist-empty{
-    text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:13.5px;
+    text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:15px;line-height:1.5;
     background:var(--card);border:1px dashed var(--line);border-radius:14px;
   }
 
-  .loading-note{text-align:center;padding:30px;color:var(--ink-soft);font-size:13px;font-family:'JetBrains Mono',monospace;}
+  .loading-note{text-align:center;padding:30px;color:var(--ink-soft);font-size:14px;font-family:'JetBrains Mono',monospace;}
+  footer{text-align:center;padding:26px 10px 6px;font-size:12.5px;line-height:1.5;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;}
 
-  footer{text-align:center;padding:26px 10px 6px;font-size:11.5px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;}
+  @media (min-width:700px){
+    .wrap{padding-top:24px;}
+    nav.tabs{margin-left:0;margin-right:0;padding-left:0;padding-right:0;}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header>
-    <div class="eyebrow">Agosto – Setembro</div>
+    <div class="eyebrow" id="period">Plano da semana</div>
     <h1>Plano Alimentar<br>da Família</h1>
-    <p class="sub">Alto teor proteico para os adultos, porções ajustadas para as crianças — com gramatura sugerida por prato, sem pesar no orçamento do mês.</p>
+    <p class="sub">Alto teor proteico para os adultos, porções ajustadas para as crianças — com gramatura e proteína estimada em cada prato, sem pesar no orçamento do mês.</p>
     <div class="savings-badge">
       <span class="num">−33%</span>
       <span class="txt">de economia estimada na lista de compras</span>
@@ -240,13 +276,12 @@
     </div>
   </header>
 
-  <nav class="tabs">
+  <nav class="tabs" aria-label="Seções">
     <button class="tab-btn active" data-tab="adults">Adultos</button>
     <button class="tab-btn" data-tab="kids">Crianças</button>
-    <button class="tab-btn" data-tab="next">Próxima Semana</button>
+    <button class="tab-btn" data-tab="next">Próxima</button>
     <button class="tab-btn" data-tab="shopping">Compras</button>
     <button class="tab-btn" data-tab="historico">Histórico</button>
-    <button class="tab-btn" data-tab="changes">O que mudou</button>
   </nav>
 
   <section class="panel active" id="panel-adults"><div class="loading-note">carregando cardápio…</div></section>
@@ -268,66 +303,93 @@
     <div id="historico-list"><div class="loading-note">carregando histórico…</div></div>
   </section>
 
-  <section class="panel" id="panel-changes">
-    <div id="changes-list"></div>
-    <div class="big-savings">
-      <div class="n">30–35%</div>
-      <div class="l">de economia mensal estimada, puxada principalmente pela redução do whey protein e pela troca de cortes de carne caros por alternativas mais baratas.</div>
-    </div>
-  </section>
-
-  <footer>plano revisado · gramatura sugerida, ajuste conforme apetite · atualizado toda semana</footer>
+  <footer>gramatura sugerida, ajuste conforme apetite · proteína estimada (Tabela TACO), varia com corte e preparo · atualizado toda semana</footer>
 </div>
 
 <script>
 const ICONS = {"Café da Manhã":"🍳","Almoço":"🍽️","Lanche da Tarde":"🥤","Jantar":"🌙"};
+const MONTHS = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
 
-const changesData = [
-  {icon:"🥤", what:"Whey protein reduzido pela metade, só para os adultos", why:"Era o maior gerador de custo recorrente; as crianças já obtêm proteína suficiente da comida."},
-  {icon:"🍗", what:"Peito de frango trocado majoritariamente por coxa/sobrecoxa", why:"Mesmo valor proteico, preço por kg bem mais baixo. Peito mantido só 1x/semana."},
-  {icon:"🥩", what:"Carne moída e bifes magros reduzidos", why:"Fígado bovino e sardinha/atum enlatados entram no rodízio — proteínas muito baratas e igualmente nutritivas."},
-  {icon:"🥚", what:"Ovos e feijão aumentados", why:"São as proteínas mais baratas por grama — sustentam o teor proteico sem pesar no orçamento."},
-  {icon:"🧒", what:"Cardápio das crianças separado do dos adultos", why:"Porções menores, sem whey, versões simples dos mesmos pratos — menos desperdício de comida."},
-  {icon:"🥛", what:"Leite e iogurte reduzidos", why:"Consequência direta de menos shakes de whey — menor volume necessário."},
-];
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function slug(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-");}
+function fmt(n){return Math.round(n).toLocaleString("pt-BR");}
 
-function slug(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-");}
-
-function renderDays(containerId, data, hasNote){
-  const el = document.getElementById(containerId);
-  let html = "";
-  data.forEach((d,i)=>{
-    html += `<div class="day-card"><div class="day-head">${d.day}<span class="day-num">DIA ${i+1}/7</span></div>`;
-    for(const [label,m] of Object.entries(d.meals)){
-      const tagHtml = m.tag ? `<span class="tag ${m.tag.c}">${m.tag.l}</span>` : "";
-      html += `<div class="meal-row"><div class="ic">${ICONS[label]||"🍽️"}</div><div class="lbl">${label}</div><div class="txt">${m.txt}${tagHtml}<div class="g">${m.g}</div></div></div>`;
-    }
-    html += `</div>`;
-  });
-  if(hasNote){
-    html += `<div class="note-box">Sem suplementação de whey protein para as crianças — a proteína vem de ovos, carnes, feijão e laticínios. Gramaturas são sugestões de ponto de partida: ajuste conforme apetite e idade de cada criança.</div>`;
-  } else {
-    html += `<div class="note-box" style="background:#EAF3E4;border-color:#CFE3C4;color:#1F4A3D;">Gramaturas por refeição (peso cozido/pronto) são sugestões — ajuste conforme apetite e rotina de treino de cada adulto.</div>`;
+// "28 de setembro a 04 de outubro" -> "Setembro – Outubro"
+function periodFromLabel(label){
+  const found = [];
+  const re = /de\s+([a-zçãéê]+)/gi;
+  let m;
+  while((m = re.exec(label || ""))){
+    const mo = m[1].toLowerCase();
+    if(MONTHS.includes(mo) && !found.includes(mo)) found.push(mo);
   }
-  el.innerHTML = html;
+  return found.map(s=>s.charAt(0).toUpperCase()+s.slice(1)).join(" – ");
+}
+
+// proteína (g) de um dia, ou null se o JSON não tiver o campo "p" (semanas antigas)
+function dayTotal(d){
+  let t = 0, any = false;
+  for(const m of Object.values(d.meals)){
+    if(typeof m.p === "number"){ t += m.p; any = true; }
+  }
+  return any ? t : null;
+}
+
+function daysHTML(days){
+  return days.map((d,i)=>{
+    const total = dayTotal(d);
+    let h = `<div class="day-card"><div class="day-head"><div class="day-name">${esc(d.day)}<span class="day-num">${i+1}/${days.length}</span></div>`
+          + (total !== null ? `<div class="day-total"><b>≈ ${fmt(total)} g</b> proteína</div>` : "")
+          + `</div>`;
+    for(const [label,m] of Object.entries(d.meals)){
+      const tag = (m.tag && (m.tag.c === "eco" || m.tag.c === "new")) ? `<span class="tag ${m.tag.c}">${esc(m.tag.l)}</span>` : "";
+      const prot = (typeof m.p === "number") ? `<span class="prot">≈ ${fmt(m.p)} g</span>` : "";
+      h += `<div class="meal"><div class="meal-top"><span class="ic">${ICONS[label]||"🍽️"}</span><span class="lbl">${esc(label)}</span>${prot}</div>`
+         + `<div class="txt">${esc(m.txt)}${tag}</div><div class="g">${esc(m.g)}</div></div>`;
+    }
+    return h + `</div>`;
+  }).join("");
+}
+
+function statsHTML(days){
+  let tot = 0, meals = 0, dayN = 0;
+  days.forEach(d=>{
+    const t = dayTotal(d);
+    if(t !== null){
+      tot += t; dayN++;
+      meals += Object.values(d.meals).filter(m=>typeof m.p === "number").length;
+    }
+  });
+  if(!dayN) return "";
+  return `<div class="stats">
+    <div class="stat"><div class="n">≈ ${fmt(tot/dayN)}<small>g</small></div><div class="l">de proteína por dia, em média</div></div>
+    <div class="stat"><div class="n">≈ ${fmt(tot/meals)}<small>g</small></div><div class="l">por refeição, em média</div></div>
+  </div>`;
+}
+
+function renderDays(containerId, data, isKids){
+  const note = isKids
+    ? `<div class="note-box">Sem suplementação de whey protein para as crianças — a proteína vem de ovos, carnes, feijão e laticínios. Gramaturas são sugestões de ponto de partida: ajuste conforme apetite e idade de cada criança.</div>`
+    : `<div class="note-box green">Gramaturas por refeição (peso cozido/pronto) são sugestões — ajuste conforme apetite e rotina de treino de cada adulto.</div>`;
+  document.getElementById(containerId).innerHTML = statsHTML(data) + daysHTML(data) + note;
 }
 
 function renderShopping(shoppingData){
   const shopEl = document.getElementById("shopping-list");
   let shopHtml = "";
-  let allIds = [];
+  const allIds = [];
   shoppingData.forEach(block=>{
-    shopHtml += `<div class="cat-block"><div class="cat-title">${block.cat}</div>`;
+    shopHtml += `<div class="cat-block"><div class="cat-title">${esc(block.cat)}</div>`;
     block.items.forEach(item=>{
       const id = "chk-"+slug(block.cat)+"-"+slug(item.name);
       allIds.push(id);
-      shopHtml += `<div class="item-card" id="card-${id}">
+      shopHtml += `<label class="item-card" id="card-${id}" for="${id}">
         <input type="checkbox" id="${id}" data-key="compras:${id}">
-        <div class="item-body">
-          <div class="item-top"><span class="item-name">${item.name}</span><span class="item-qty">${item.qty}</span></div>
-          <div class="item-obs">${item.obs}</div>
-        </div>
-      </div>`;
+        <span class="item-body">
+          <span class="item-top"><span class="item-name">${esc(item.name)}</span><span class="item-qty">${esc(item.qty)}</span></span>
+          <span class="item-obs">${esc(item.obs)}</span>
+        </span>
+      </label>`;
     });
     shopHtml += `</div>`;
   });
@@ -337,7 +399,7 @@ function renderShopping(shoppingData){
     const total = allIds.length;
     const checked = allIds.filter(id=>document.getElementById(id).checked).length;
     document.getElementById("progress-count").textContent = checked+" / "+total;
-    document.getElementById("progress-fill").style.width = (total? (checked/total*100):0)+"%";
+    document.getElementById("progress-fill").style.width = (total ? (checked/total*100) : 0)+"%";
   }
   allIds.forEach(id=>{
     const cb = document.getElementById(id);
@@ -364,11 +426,12 @@ function renderHistorico(manifest){
     return;
   }
   let html = "";
-  manifest.slice().reverse().forEach((entry, idx)=>{
+  // o manifest já vem do mais novo para o mais antigo (o script de promoção usa unshift)
+  manifest.forEach((entry, idx)=>{
     html += `<div class="hist-item" id="hist-${idx}">
-      <div class="hist-head" onclick="toggleHist(${idx}, '${entry.file}')">
-        <span class="l">${entry.label}</span>
-        <span class="d">${entry.date} <span class="arrow">›</span></span>
+      <div class="hist-head" onclick="toggleHist(${idx}, '${esc(entry.file)}')">
+        <span class="l">${esc(entry.label)}</span>
+        <span class="d">${esc(entry.date)} <span class="arrow">›</span></span>
       </div>
       <div class="hist-body" id="hist-body-${idx}"></div>
     </div>`;
@@ -376,7 +439,7 @@ function renderHistorico(manifest){
   el.innerHTML = html;
 }
 
-let histLoaded = {};
+const histLoaded = {};
 async function toggleHist(idx, file){
   const item = document.getElementById("hist-"+idx);
   item.classList.toggle("open");
@@ -386,34 +449,13 @@ async function toggleHist(idx, file){
     try{
       const res = await fetch(file);
       const data = await res.json();
-      let html = `<div style="margin-top:10px;"><strong style="font-size:12px;color:var(--forest);font-family:'JetBrains Mono',monospace;text-transform:uppercase;">Adultos</strong></div>`;
-      body.innerHTML = html;
-      const tmp1 = document.createElement("div"); tmp1.id = "tmp-adults-"+idx;
-      body.appendChild(tmp1);
-      renderDaysInto(tmp1, data.adults);
-      const lbl2 = document.createElement("div");
-      lbl2.style = "margin-top:14px;";
-      lbl2.innerHTML = `<strong style="font-size:12px;color:var(--berry);font-family:'JetBrains Mono',monospace;text-transform:uppercase;">Crianças</strong>`;
-      body.appendChild(lbl2);
-      const tmp2 = document.createElement("div"); tmp2.id = "tmp-kids-"+idx;
-      body.appendChild(tmp2);
-      renderDaysInto(tmp2, data.kids);
+      body.innerHTML = `<div class="sec-label">Adultos</div>${daysHTML(data.adults)}`
+                     + `<div class="sec-label kids">Crianças</div>${daysHTML(data.kids)}`;
       histLoaded[idx] = true;
     }catch(e){
       body.innerHTML = `<div class="loading-note">não foi possível carregar essa semana.</div>`;
     }
   }
-}
-function renderDaysInto(el, data){
-  let html = "";
-  data.forEach((d,i)=>{
-    html += `<div class="day-card" style="margin-top:8px;"><div class="day-head">${d.day}<span class="day-num">DIA ${i+1}/7</span></div>`;
-    for(const [label,m] of Object.entries(d.meals)){
-      html += `<div class="meal-row"><div class="ic">${ICONS[label]||"🍽️"}</div><div class="lbl">${label}</div><div class="txt">${m.txt}<div class="g">${m.g}</div></div></div>`;
-    }
-    html += `</div>`;
-  });
-  el.innerHTML = html;
 }
 
 function renderNextWeek(week){
@@ -422,45 +464,27 @@ function renderNextWeek(week){
     el.innerHTML = `<div class="hist-empty">Ainda não há prévia disponível.<br>A próxima leva é gerada toda quinta-feira e passa a valer na segunda-feira seguinte — enquanto isso, a semana atual continua valendo normalmente.</div>`;
     return;
   }
-  let html = `<div class="note-box" style="background:#F7E7EB;border-color:#EAC3CE;color:var(--berry-dark);">
-    Prévia da próxima semana (<strong>${week.weekLabel}</strong>) — ainda não está em vigor. Ela substitui o cardápio atual automaticamente na próxima segunda-feira, dando tempo de organizar as compras com antecedência.
-  </div>`;
-  html += `<div style="margin-top:4px;"><strong style="font-size:12px;color:var(--forest);font-family:'JetBrains Mono',monospace;text-transform:uppercase;">Adultos</strong></div>`;
-  el.innerHTML = html;
-  const tmp1 = document.createElement("div");
-  el.appendChild(tmp1);
-  renderDaysInto(tmp1, week.adults);
-  const lbl2 = document.createElement("div");
-  lbl2.style = "margin-top:14px;";
-  lbl2.innerHTML = `<strong style="font-size:12px;color:var(--berry);font-family:'JetBrains Mono',monospace;text-transform:uppercase;">Crianças</strong>`;
-  el.appendChild(lbl2);
-  const tmp2 = document.createElement("div");
-  el.appendChild(tmp2);
-  renderDaysInto(tmp2, week.kids);
+  el.innerHTML = `<div class="note-box berry">Prévia da próxima semana (<strong>${esc(week.weekLabel)}</strong>) — ainda não está em vigor. Ela substitui o cardápio atual automaticamente na próxima segunda-feira, dando tempo de organizar as compras com antecedência.</div>`
+    + `<div class="sec-label">Adultos</div>${statsHTML(week.adults)}${daysHTML(week.adults)}`
+    + `<div class="sec-label kids">Crianças</div>${statsHTML(week.kids)}${daysHTML(week.kids)}`;
 }
 
-// changes (static)
-const chEl = document.getElementById("changes-list");
-let chHtml = "";
-changesData.forEach(c=>{
-  chHtml += `<div class="change-card"><div class="icon">${c.icon}</div><div class="what">${c.what}</div><div class="why">${c.why}</div></div>`;
-});
-chEl.innerHTML = chHtml;
-
-// tabs
+// abas
 document.querySelectorAll(".tab-btn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
     document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
     btn.classList.add("active");
     document.getElementById("panel-"+btn.dataset.tab).classList.add("active");
+    btn.scrollIntoView({inline:"center", block:"nearest", behavior:"smooth"});
   });
 });
 
-// load everything
+// carregar tudo
 async function init(){
   try{
     const week = await (await fetch("data/current-week.json")).json();
+    document.getElementById("period").textContent = periodFromLabel(week.weekLabel) || "Plano da semana";
     document.getElementById("moti-text").textContent = week.motivational;
     document.getElementById("moti-week").textContent = "Semana de " + week.weekLabel;
     renderDays("panel-adults", week.adults, false);
@@ -481,8 +505,9 @@ async function init(){
     renderHistorico([]);
   }
   try{
-    const next = await (await fetch("data/next-week.json")).json();
-    renderNextWeek(next);
+    const res = await fetch("data/next-week.json");
+    if(!res.ok) throw new Error("sem prévia");
+    renderNextWeek(await res.json());
   }catch(e){
     renderNextWeek(null);
   }
