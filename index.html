@@ -8,7 +8,9 @@
   Dados: data/current-week.json · data/next-week.json · data/shopping.json · historico/manifest.json
   Regra de ouro: a automação NUNCA edita este arquivo — só os JSONs.
   Testado: renderização em 390px (celular) e 1280px (desktop); semanas antigas sem "p" continuam abrindo.
-  TODO: perfil do pai na aba Adultos · semanas futuras com antecedência · lista de compras por semana.
+  Pai: se o JSON da semana tiver a lista "pai", a aba Adultos ganha o seletor Casal | Pai.
+       Refeições "(na rua)" no rótulo ganham o selo "na rua". Não publicar dados pessoais dele aqui: o repositório é público.
+  TODO: lista de compras por semana (hoje é a lista mensal fixa, sem o pai).
 -->
 <html lang="pt-BR">
 <head>
@@ -197,6 +199,22 @@
   .note-box.berry{background:#F7E7EB;border-color:#EAC3CE;color:var(--berry-dark);}
   .sec-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--forest);margin:16px 0 4px;}
   .sec-label.kids{color:var(--berry);}
+  .sec-label.pai{color:var(--gold-dark);}
+
+  /* Casal | Pai */
+  .seg{display:flex;gap:6px;background:#E6E6E1;border-radius:100px;padding:4px;margin:0 0 14px;}
+  .seg-btn{
+    flex:1;min-height:44px;border:0;border-radius:100px;background:transparent;cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:var(--ink-soft);
+  }
+  .seg-btn.active{background:var(--card);color:var(--forest-dark);box-shadow:var(--shadow);}
+  .seg-pane{display:none;}
+  .seg-pane.active{display:block;}
+  .street{
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.03em;
+    color:var(--gold-dark);background:#FBEEDD;padding:2px 8px;border-radius:100px;white-space:nowrap;
+  }
+  #seg-pai .day-card::before{background:linear-gradient(180deg,var(--gold-dark),var(--forest));}
 
   /* compras */
   .progress-bar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px;box-shadow:var(--shadow);}
@@ -252,6 +270,12 @@
   .loading-note{text-align:center;padding:30px;color:var(--ink-soft);font-size:14px;font-family:'JetBrains Mono',monospace;}
   footer{text-align:center;padding:26px 10px 6px;font-size:12.5px;line-height:1.5;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;}
 
+  @media (max-width:380px){
+    .meal-top{gap:6px;}
+    .meal-top .lbl{font-size:11.5px;letter-spacing:.02em;}
+    .street{padding:2px 6px;}
+    .prot{padding:3px 8px;}
+  }
   @media (min-width:700px){
     .wrap{padding-top:24px;}
     nav.tabs{margin-left:0;margin-right:0;padding-left:0;padding-right:0;}
@@ -344,7 +368,10 @@ function daysHTML(days){
     for(const [label,m] of Object.entries(d.meals)){
       const tag = (m.tag && (m.tag.c === "eco" || m.tag.c === "new")) ? `<span class="tag ${m.tag.c}">${esc(m.tag.l)}</span>` : "";
       const prot = (typeof m.p === "number") ? `<span class="prot">≈ ${fmt(m.p)} g</span>` : "";
-      h += `<div class="meal"><div class="meal-top"><span class="ic">${ICONS[label]||"🍽️"}</span><span class="lbl">${esc(label)}</span>${prot}</div>`
+      // "Almoço (na rua)" -> rótulo "Almoço" + selo "na rua"
+      const base = label.replace(/\s*\(.*\)\s*$/, "");
+      const street = /\(\s*na rua\s*\)/i.test(label) ? `<span class="street">na rua</span>` : "";
+      h += `<div class="meal"><div class="meal-top"><span class="ic">${ICONS[base]||"🍽️"}</span><span class="lbl">${esc(base)}</span>${street}${prot}</div>`
          + `<div class="txt">${esc(m.txt)}${tag}</div><div class="g">${esc(m.g)}</div></div>`;
     }
     return h + `</div>`;
@@ -367,11 +394,32 @@ function statsHTML(days){
   </div>`;
 }
 
-function renderDays(containerId, data, isKids){
-  const note = isKids
-    ? `<div class="note-box">Sem suplementação de whey protein para as crianças — a proteína vem de ovos, carnes, feijão e laticínios. Gramaturas são sugestões de ponto de partida: ajuste conforme apetite e idade de cada criança.</div>`
-    : `<div class="note-box green">Gramaturas por refeição (peso cozido/pronto) são sugestões — ajuste conforme apetite e rotina de treino de cada adulto.</div>`;
-  document.getElementById(containerId).innerHTML = statsHTML(data) + daysHTML(data) + note;
+const NOTE_KIDS = `<div class="note-box">Sem suplementação de whey protein para as crianças — a proteína vem de ovos, carnes, feijão e laticínios. Gramaturas são sugestões de ponto de partida: ajuste conforme apetite e idade de cada criança.</div>`;
+const NOTE_ADULTS = `<div class="note-box green">Gramaturas por refeição (peso cozido/pronto) são sugestões — ajuste conforme apetite e rotina de treino de cada adulto.</div>`;
+const NOTE_PAI = `<div class="note-box green">Café da manhã e jantar são feitos em casa. Almoço e lanche <strong>na rua</strong> são orientações de escolha (por quilo, prato feito, padaria). Foco em proteína em todas as refeições, pouca gordura saturada e bastante fibra.</div>`;
+
+function renderKids(data){
+  document.getElementById("panel-kids").innerHTML = statsHTML(data) + daysHTML(data) + NOTE_KIDS;
+}
+
+// Aba Adultos: "Casal" e, quando a semana tem a lista "pai", o seletor Casal | Pai
+function renderAdults(week){
+  const el = document.getElementById("panel-adults");
+  const casal = statsHTML(week.adults) + daysHTML(week.adults) + NOTE_ADULTS;
+  if(!Array.isArray(week.pai) || week.pai.length === 0){ el.innerHTML = casal; return; }
+  el.innerHTML = `<div class="seg" role="group" aria-label="Quem">
+      <button class="seg-btn active" data-seg="casal">Casal</button>
+      <button class="seg-btn" data-seg="pai">Pai</button>
+    </div>
+    <div class="seg-pane active" id="seg-casal">${casal}</div>
+    <div class="seg-pane" id="seg-pai">${NOTE_PAI}${statsHTML(week.pai)}${daysHTML(week.pai)}</div>`;
+  el.querySelectorAll(".seg-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      el.querySelectorAll(".seg-btn").forEach(b=>b.classList.toggle("active", b === btn));
+      el.querySelectorAll(".seg-pane").forEach(p=>p.classList.toggle("active", p.id === "seg-"+btn.dataset.seg));
+      window.scrollTo({top:0, behavior:"auto"});
+    });
+  });
 }
 
 function renderShopping(shoppingData){
@@ -449,8 +497,9 @@ async function toggleHist(idx, file){
     try{
       const res = await fetch(file);
       const data = await res.json();
-      body.innerHTML = `<div class="sec-label">Adultos</div>${daysHTML(data.adults)}`
-                     + `<div class="sec-label kids">Crianças</div>${daysHTML(data.kids)}`;
+      body.innerHTML = `<div class="sec-label">${Array.isArray(data.pai) ? "Casal" : "Adultos"}</div>${daysHTML(data.adults)}`
+                     + `<div class="sec-label kids">Crianças</div>${daysHTML(data.kids)}`
+                     + (Array.isArray(data.pai) && data.pai.length ? `<div class="sec-label pai">Pai</div>${daysHTML(data.pai)}` : "");
       histLoaded[idx] = true;
     }catch(e){
       body.innerHTML = `<div class="loading-note">não foi possível carregar essa semana.</div>`;
@@ -461,12 +510,15 @@ async function toggleHist(idx, file){
 function renderNextWeek(week){
   const el = document.getElementById("next-week-content");
   if(!week){
-    el.innerHTML = `<div class="hist-empty">Ainda não há prévia disponível.<br>A próxima leva é gerada toda quinta-feira e passa a valer na segunda-feira seguinte — enquanto isso, a semana atual continua valendo normalmente.</div>`;
+    el.innerHTML = `<div class="hist-empty">Ainda não há prévia disponível.<br>A próxima semana é liberada toda segunda-feira, logo depois que a semana atual entra em vigor — assim você tem 7 dias para comprar e se organizar.</div>`;
     return;
   }
+  const pai = (Array.isArray(week.pai) && week.pai.length)
+    ? `<div class="sec-label pai">Pai</div>${NOTE_PAI}${statsHTML(week.pai)}${daysHTML(week.pai)}` : "";
   el.innerHTML = `<div class="note-box berry">Prévia da próxima semana (<strong>${esc(week.weekLabel)}</strong>) — ainda não está em vigor. Ela substitui o cardápio atual automaticamente na próxima segunda-feira, dando tempo de organizar as compras com antecedência.</div>`
-    + `<div class="sec-label">Adultos</div>${statsHTML(week.adults)}${daysHTML(week.adults)}`
-    + `<div class="sec-label kids">Crianças</div>${statsHTML(week.kids)}${daysHTML(week.kids)}`;
+    + `<div class="sec-label">Casal</div>${statsHTML(week.adults)}${daysHTML(week.adults)}`
+    + `<div class="sec-label kids">Crianças</div>${statsHTML(week.kids)}${daysHTML(week.kids)}`
+    + pai;
 }
 
 // abas
@@ -487,8 +539,8 @@ async function init(){
     document.getElementById("period").textContent = periodFromLabel(week.weekLabel) || "Plano da semana";
     document.getElementById("moti-text").textContent = week.motivational;
     document.getElementById("moti-week").textContent = "Semana de " + week.weekLabel;
-    renderDays("panel-adults", week.adults, false);
-    renderDays("panel-kids", week.kids, true);
+    renderAdults(week);
+    renderKids(week.kids);
   }catch(e){
     document.getElementById("moti-text").textContent = "Não foi possível carregar a mensagem desta semana.";
   }
