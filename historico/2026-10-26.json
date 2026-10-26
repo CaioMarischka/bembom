@@ -1,0 +1,302 @@
+{
+  "weekLabel": "19 a 25 de outubro",
+  "motivational": "Cuidar do corpo é um hábito que se constrói refeição por refeição, sem pressa e sem cobrança. Cada prato nutritivo de hoje é um presente para a sua energia de amanhã.",
+  "adults": [
+    {
+      "day": "Segunda-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Crepioca (tapioca e 2 ovos) recheada com queijo, acompanhada de maçã",
+          "g": "2 ovos (100g) · 2 colheres de tapioca (30g) · 25g queijo · 100g maçã"
+        },
+        "Almoço": {
+          "txt": "Bife magro grelhado, acompanhado de arroz, feijão e salada de cenoura",
+          "g": "150g bife magro · 100g arroz · 80g feijão · 80g cenoura"
+        },
+        "Lanche da Tarde": {
+          "txt": "Iogurte natural com mamão picado e aveia",
+          "g": "170g iogurte natural · 100g mamão · 15g aveia"
+        },
+        "Jantar": {
+          "txt": "Sobrecoxa de frango assada na airfryer, acompanhada de batata doce assada e brócolis no vapor",
+          "g": "150g sobrecoxa · 150g batata doce · 80g brócolis"
+        }
+      }
+    },
+    {
+      "day": "Terça-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Mingau de aveia com leite e banana",
+          "g": "40g aveia em flocos · 200ml leite · 100g banana"
+        },
+        "Almoço": {
+          "txt": "Carne moída refogada com alho, acompanhada de arroz, feijão e salada de abobrinha",
+          "g": "150g carne moída · 100g arroz · 80g feijão · 80g abobrinha"
+        },
+        "Lanche da Tarde": {
+          "txt": "Pão integral com queijo, acompanhado de mamão",
+          "g": "2 fatias de pão integral (50g) · 30g queijo · 100g mamão"
+        },
+        "Jantar": {
+          "txt": "Omelete de 3 ovos com queijo, acompanhada de abóbora assada e salada de repolho",
+          "g": "3 ovos (150g) · 20g queijo · 150g abóbora · 80g repolho"
+        }
+      }
+    },
+    {
+      "day": "Quarta-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Ovos mexidos com pão integral, acompanhados de banana",
+          "g": "2 ovos (100g) · 2 fatias de pão integral (50g) · 100g banana"
+        },
+        "Almoço": {
+          "txt": "Peito de frango grelhado, acompanhado de arroz, feijão e couve-flor refogada",
+          "g": "150g peito de frango · 100g arroz · 80g feijão · 80g couve-flor"
+        },
+        "Lanche da Tarde": {
+          "txt": "Shake de Whey Protein com leite e banana",
+          "g": "30g whey (1 scoop) · 200ml leite · 100g banana"
+        },
+        "Jantar": {
+          "txt": "Fígado bovino acebolado, acompanhado de purê de batata e salada de cenoura",
+          "g": "150g fígado bovino · 200g purê de batata · 80g cenoura"
+        }
+      }
+    },
+    {
+      "day": "Quinta-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Iogurte natural com aveia e mamão, acompanhado de uma fatia de pão integral com queijo",
+          "g": "170g iogurte natural · 20g aveia · 100g mamão · 1 fatia de pão integral (25g) · 20g queijo"
+        },
+        "Almoço": {
+          "txt": "Sobrecoxa de frango grelhada, acompanhada de arroz, feijão e brócolis refogado",
+          "g": "150g sobrecoxa · 100g arroz · 80g feijão · 80g brócolis"
+        },
+        "Lanche da Tarde": {
+          "txt": "Tapioca com queijo, acompanhada de maçã",
+          "g": "2 colheres de tapioca (30g) · 30g queijo · 100g maçã"
+        },
+        "Jantar": {
+          "txt": "Carne em tiras salteada com abobrinha e cenoura, acompanhada de purê de abóbora",
+          "g": "150g carne em tiras · 80g abobrinha · 60g cenoura · 150g purê de abóbora"
+        }
+      }
+    },
+    {
+      "day": "Sexta-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Panquecas de aveia com ovo, acompanhadas de banana",
+          "g": "40g aveia · 2 ovos (100g) · 100g banana"
+        },
+        "Almoço": {
+          "txt": "Atum refogado com alho e cebola, acompanhado de arroz, feijão e salada de repolho",
+          "g": "1 lata de atum (120g) · 100g arroz · 80g feijão · 80g repolho"
+        },
+        "Lanche da Tarde": {
+          "txt": "Iogurte natural com banana e aveia",
+          "g": "170g iogurte natural · 80g banana · 15g aveia"
+        },
+        "Jantar": {
+          "txt": "Peito de frango grelhado, acompanhado de batata cozida e salada de couve-flor",
+          "g": "150g peito de frango · 150g batata · 80g couve-flor"
+        }
+      }
+    },
+    {
+      "day": "Sábado",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Mingau de aveia com Whey Protein e mamão",
+          "g": "40g aveia · 30g whey · 200ml leite · 100g mamão"
+        },
+        "Almoço": {
+          "txt": "Bife magro acebolado, acompanhado de arroz, feijão e abobrinha assada na airfryer",
+          "g": "150g bife magro · 100g arroz · 80g feijão · 80g abobrinha"
+        },
+        "Lanche da Tarde": {
+          "txt": "Crepioca de queijo, acompanhada de maçã",
+          "g": "1 ovo (50g) · 2 colheres de tapioca (30g) · 30g queijo · 100g maçã"
+        },
+        "Jantar": {
+          "txt": "Sobrecoxa de frango assada, acompanhada de purê de batata doce e salada de brócolis",
+          "g": "150g sobrecoxa · 150g purê de batata doce · 80g brócolis"
+        }
+      }
+    },
+    {
+      "day": "Domingo",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Omelete de 3 ovos com queijo, acompanhada de pão integral e banana",
+          "g": "3 ovos (150g) · 20g queijo · 1 fatia de pão integral (25g) · 100g banana"
+        },
+        "Almoço": {
+          "txt": "Escondidinho de carne moída com purê de batata, acompanhado de salada de cenoura e abobrinha",
+          "g": "150g carne moída · 200g purê de batata · 80g cenoura · 60g abobrinha"
+        },
+        "Lanche da Tarde": {
+          "txt": "Shake de Whey Protein com leite e mamão",
+          "g": "30g whey (1 scoop) · 200ml leite · 100g mamão"
+        },
+        "Jantar": {
+          "txt": "Sardinha assada, acompanhada de arroz, feijão e salada de repolho",
+          "g": "2 sardinhas (120g) · 100g arroz · 80g feijão · 80g repolho"
+        }
+      }
+    }
+  ],
+  "kids": [
+    {
+      "day": "Segunda-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Crepioca pequena (tapioca e 1 ovo) com queijo e maçã picada",
+          "g": "1 ovo (50g) · 1 colher de tapioca (15g) · 15g queijo · 80g maçã"
+        },
+        "Almoço": {
+          "txt": "Bife magro em tirinhas com arroz, feijão e cenoura cozida",
+          "g": "70g bife magro · 70g arroz · 60g feijão · 50g cenoura"
+        },
+        "Lanche da Tarde": {
+          "txt": "Iogurte natural com mamão picado",
+          "g": "120g iogurte natural · 80g mamão"
+        },
+        "Jantar": {
+          "txt": "Sobrecoxa desfiada com batata doce amassada e brócolis bem picado",
+          "g": "70g sobrecoxa · 100g batata doce · 50g brócolis"
+        }
+      }
+    },
+    {
+      "day": "Terça-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Mingau de aveia com leite e banana",
+          "g": "30g aveia · 150ml leite · 70g banana"
+        },
+        "Almoço": {
+          "txt": "Carne moída refogada com arroz, feijão e abobrinha bem picada",
+          "g": "70g carne moída · 70g arroz · 60g feijão · 50g abobrinha"
+        },
+        "Lanche da Tarde": {
+          "txt": "Pão integral com queijo e mamão",
+          "g": "1 fatia de pão integral (25g) · 20g queijo · 80g mamão"
+        },
+        "Jantar": {
+          "txt": "Omelete pequena com queijo, acompanhada de purê de abóbora",
+          "g": "2 ovos (100g) · 15g queijo · 100g purê de abóbora"
+        }
+      }
+    },
+    {
+      "day": "Quarta-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Ovo mexido com pão integral e banana",
+          "g": "1 ovo (50g) · 1 fatia de pão integral (25g) · 70g banana"
+        },
+        "Almoço": {
+          "txt": "Peito de frango desfiado com arroz, feijão e couve-flor bem picada",
+          "g": "70g peito de frango · 70g arroz · 60g feijão · 50g couve-flor"
+        },
+        "Lanche da Tarde": {
+          "txt": "Banana picada com aveia e iogurte natural",
+          "g": "80g banana · 10g aveia · 100g iogurte natural"
+        },
+        "Jantar": {
+          "txt": "Fígado bovino desfiado com purê de batata e cenoura cozida",
+          "g": "70g fígado bovino · 120g purê de batata · 50g cenoura"
+        }
+      }
+    },
+    {
+      "day": "Quinta-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Iogurte natural com aveia e mamão, acompanhado de pão integral",
+          "g": "120g iogurte natural · 10g aveia · 80g mamão · 1 fatia de pão integral (25g)"
+        },
+        "Almoço": {
+          "txt": "Sobrecoxa desfiada com arroz, feijão e brócolis bem picado",
+          "g": "70g sobrecoxa · 70g arroz · 60g feijão · 50g brócolis"
+        },
+        "Lanche da Tarde": {
+          "txt": "Tapioca pequena com queijo e maçã",
+          "g": "1 colher de tapioca (15g) · 20g queijo · 80g maçã"
+        },
+        "Jantar": {
+          "txt": "Carne em tirinhas com purê de abóbora e abobrinha cozida bem picada",
+          "g": "70g carne em tiras · 100g purê de abóbora · 50g abobrinha"
+        }
+      }
+    },
+    {
+      "day": "Sexta-feira",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Panqueca de aveia com ovo e banana",
+          "g": "30g aveia · 1 ovo (50g) · 70g banana"
+        },
+        "Almoço": {
+          "txt": "Atum desfiado com arroz, feijão e repolho refogado bem picado",
+          "g": "70g atum · 70g arroz · 60g feijão · 50g repolho"
+        },
+        "Lanche da Tarde": {
+          "txt": "Iogurte natural com banana",
+          "g": "120g iogurte natural · 70g banana"
+        },
+        "Jantar": {
+          "txt": "Peito de frango desfiado com batata cozida e couve-flor bem picada",
+          "g": "70g peito de frango · 100g batata · 50g couve-flor"
+        }
+      }
+    },
+    {
+      "day": "Sábado",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Mingau de aveia com leite e mamão",
+          "g": "30g aveia · 150ml leite · 80g mamão"
+        },
+        "Almoço": {
+          "txt": "Bife magro em tirinhas com arroz, feijão e abobrinha bem picada",
+          "g": "70g bife magro · 70g arroz · 60g feijão · 50g abobrinha"
+        },
+        "Lanche da Tarde": {
+          "txt": "Crepioca pequena com queijo e maçã",
+          "g": "1 ovo (50g) · 1 colher de tapioca (15g) · 15g queijo · 80g maçã"
+        },
+        "Jantar": {
+          "txt": "Sobrecoxa desfiada com purê de batata doce e brócolis bem picado",
+          "g": "70g sobrecoxa · 100g purê de batata doce · 50g brócolis"
+        }
+      }
+    },
+    {
+      "day": "Domingo",
+      "meals": {
+        "Café da Manhã": {
+          "txt": "Omelete pequena com queijo, acompanhada de banana",
+          "g": "2 ovos (100g) · 15g queijo · 70g banana"
+        },
+        "Almoço": {
+          "txt": "Escondidinho de carne moída com purê de batata, acompanhado de cenoura cozida",
+          "g": "70g carne moída · 150g purê de batata · 50g cenoura"
+        },
+        "Lanche da Tarde": {
+          "txt": "Mamão picado com aveia e iogurte natural",
+          "g": "80g mamão · 10g aveia · 100g iogurte natural"
+        },
+        "Jantar": {
+          "txt": "Sardinha desfiada (sem espinhas) com arroz, feijão e repolho refogado bem picado",
+          "g": "70g sardinha · 70g arroz · 60g feijão · 50g repolho"
+        }
+      }
+    }
+  ]
+}
