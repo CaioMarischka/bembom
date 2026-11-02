@@ -1,5 +1,10 @@
 [
   {
+    "label": "26 de outubro a 1 de novembro",
+    "date": "2026-11-02",
+    "file": "historico/2026-11-02.json"
+  },
+  {
     "label": "19 a 25 de outubro",
     "date": "2026-10-26",
     "file": "historico/2026-10-26.json"
